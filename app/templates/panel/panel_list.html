@@ -1,0 +1,175 @@
+{% extends "panel_template.html" %}
+
+{% block title %} Crondroid {% endblock %}
+
+
+
+{% block inner_content %}
+<div class="starter-template">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel-cron">
+                <div class="panel-heading">General information</div>
+                <div class="panel-body-cron">
+                    <img id="panel-logo" src="{{ url_for('static',filename='img/logo-50.png') }}">
+                        <p class="text-left">Web-Token:
+                            <span style="float: right;">{{ webToken }}</span>
+                        </p>
+                        <p class="text-left">Script Name:
+                            <span style="float: right;">{{ script_data['script_data'][0]["script_name"] }}</span>
+                        </p>
+                        <p class="text-left">Script Author:
+                            <span style="float: right;">{{ script_data['script_data'][0]["script_author"] }}</span>
+                        </p>
+                        <p class="text-left">Total bots:
+                            <span style="float: right;">{{ botting_data|length }}</span>
+                        </p>
+
+                        <p class="text-left">Script Name:
+                            <span style="float: right;">Online</span>
+                        </p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-8">
+            <div class="panel-cron">
+                <div class="panel-heading">Bot listings</div>
+                <div class="panel-body-cron">
+                    <div class="list-group botlist">
+                        {% for bot in range(botting_data|length) %}
+                        <a href="#" class="list-group-item botlist-element" onclick="return testBotModal();">
+                            <h4 class="list-group-item-heading"><strong>Bot alias: </strong> {{ botting_data[bot]['bot_name']}}</h4>
+                            <p class="list-group-item-text text-muted">IP-Address: {{ botting_data[bot]['ip_address'] }}</p>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+    <div id="domMessage" style="display:none; padding: 10px;">
+        <img id="panel-logo" src="{{ url_for('static',filename='img/logo-50.png') }}">
+        <span class="text-muted">Requesting bot data...</span>
+    </div>
+{% endblock %}
+
+
+{% block javascript %}
+<script type="text/javascript">
+
+$   (document).ajaxStop($.unblockUI);
+
+    function loadBotData(bot_id)
+    {
+        showWait();
+        setTimeout(function() {
+             $.ajax({
+                url: "{{ url_for('panel_controller.bot_data') }}",
+                method: 'POST',
+                contentType: "application/json",
+                data: JSON.stringify(
+                    {
+                        "bot_id" : bot_id
+                    }
+                ),
+                success: function (result) {
+                    json_data = JSON.parse(result);
+                    showBotModal(json_data)
+                }
+            });
+        },2000);
+
+    }
+
+    function showWait() {
+        $.blockUI({
+            css: {
+                backgroundColor: '#333',
+                color: '#fff',
+                border: "#222"
+            },
+            message: $('#domMessage')
+        });
+    }
+
+    function testBotModal() {
+        BootstrapDialog.show({
+            message: function(dialog) {
+                var $message = $('<div></div>');
+                var pageToLoad = dialog.getData('pageToLoad');
+                $message.load(pageToLoad);
+
+                return $message;
+            },
+            data: {
+                'pageToLoad': '{{ url_for("panel_controller.test") }}'
+            }
+        });
+    }
+    function showBotModal(json_data) {
+        bot_data = JSON.parse(json_data["game_data"]);
+
+        var table = $("<table " +
+            "data-toggle='table'> " +
+            "</table>");
+        table.bootstrapTable({
+            columns: [{
+                field: 'key_value',
+                title: 'Key parameter'
+            }, {
+                field: 'value_parameter',
+                title: 'Value parameter'
+            }]
+        });
+        data = [];
+        $.each(bot_data, function(k, v) {
+            data.push({key_value : k, value_parameter : v});
+        });
+        table.bootstrapTable("append",data);
+        var dialog = new BootstrapDialog(
+            {
+            message: function(dialogRef)
+            {
+
+                return table;
+            },
+
+            buttons: [
+                {
+                    label: 'Request bot screenshot',
+                    cssClass: 'cron-btn-green',
+                    action: function(dialog) {
+                        //dialog.setTitle('Request screenshot');
+                    }
+                },
+                {
+                    label: 'Close',
+                    cssClass: "btn-danger",
+                    action: function(dialog) {
+                        dialog.close();
+                    }
+                }
+            ],
+            closable: false,
+                draggable: true
+        });
+
+        dialog.realize();
+        dialog.setTitle("Bot data for alias: " + json_data['bot_name']);
+        dialog.getModalHeader().css('background-color',"#2ecc71");
+        dialog.getModalHeader().css('border-bottom',"0");
+        dialog.getModalFooter().css("background-color","#222");
+        dialog.getModalFooter().css("border-top","1px solid #2ecc71");
+        dialog.getModalBody().css('background-color', '#222');
+        dialog.getModalBody().css('color', '#fff');
+        dialog.open();
+    }
+</script>
+{% endblock %}

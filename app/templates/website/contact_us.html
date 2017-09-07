@@ -1,0 +1,38 @@
+{% extends 'website/website_template.html' %}
+
+{% block content %}
+
+     <div class="container">
+        <div class="row">
+          <div class="col-sm-12 col-md-4">
+               <a href="https://discord.gg/pegHZ37"><div class="thumbnail script-highlight" style="margin-top:20px; height: 400px;">
+                    <img src="{{ url_for('static',filename='img/social/discord.png') }}"/>
+                    <div class="caption">
+                        <h3 class="text-center">Discord</h3>
+                    </div>
+                </div></a>
+
+          </div>
+            <div class="col-sm-12 col-md-4">
+               <div class="thumbnail script-highlight" style="margin-top:20px; height: 400px;">
+                    <img src="{{ url_for('static',filename='img/social/skype.png') }}"/>
+                    <div class="caption">
+                        <br><br><br>
+                        <h3 class="text-center">Skype</h3>
+                    </div>
+                </div>
+
+          </div>
+            <div class="col-sm-12 col-md-4">
+               <div class="thumbnail script-highlight" style="margin-top:20px; height: 400px;">
+                    <img src="{{ url_for('static',filename='img/social/email.png') }}"/>
+                    <div class="caption">
+                        <h3 class="text-center">E-Mail</h3>
+                    </div>
+                </div>
+
+          </div>
+        </div>
+    </div>
+
+{% endblock %}

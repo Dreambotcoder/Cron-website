@@ -1,0 +1,48 @@
+{% extends 'template.html' %}
+
+{% block title %}Crondroid{% endblock %}
+
+{% block content %}
+    <div class="starter-template">
+    <div class="row">
+    <div class="col col-md-3"></div>
+        <div class="col col-md-6">
+            <div>
+                <img src="{{ url_for('static',filename="img/logo.png") }}" \ id="login-logo">
+            </div>
+                <form onsubmit="return authenticate();" class="auth-form" id="login-form" method="post">
+                        <input autocomplete="off" type="text" class="auth-form-element" name="web_token" id="email" placeholder="Web-Token">
+                        <br>
+                        <br>
+                        <input type="password" class="auth-form-element" id="pwd" name="token_pass" placeholder="Token-Pass">
+                    <br>
+                    <br>
+                        <button type="submit" class="btn btn-block main-green-btn">Load bots</button>
+                </form>
+            </div>
+        <div class="col col-md-3"></div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block javascript %}
+<script type="text/javascript">
+    function authenticate() {
+            var frm = $('#login-form');
+            serialised_frm = frm.serialize();
+            $.ajax({
+                url: "{{ url_for('login_controller.auth') }}",
+                method: 'POST',
+                data: serialised_frm,
+                success: function (result) {
+                    window.location = result;
+                },
+                 error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    $.notify("Wrong account credentials", { className: "error", position:"right bottom", style:"bootstrap", gap: 3 });
+                 }
+            });
+            return false;
+        }
+</script>
+{% endblock %}

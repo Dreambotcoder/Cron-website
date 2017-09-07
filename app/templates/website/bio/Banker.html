@@ -1,0 +1,49 @@
+{% extends 'template.html' %}
+
+
+{% block nav %}
+    <nav class="navbar custom-nav">
+  <div class="container-fluid" style="padding:20px;">
+    <ul class="nav navbar-nav">
+        <li><img src="{{ url_for('static',filename='img/logo-50.png')}}" style="height:50px; width: auto;"/></li>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Scripts</a></li>
+      <li class="active"><a href="#">About us</a></li>
+        <li><a href="#">Contact us</a></li>
+         <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Products<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Crondroid</a></li>
+            <li><a href="#">CronApp</a></li>
+          </ul>
+        </li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#"><span class="glyphicon glyphicon-globe"></span> Crondroid portal</a></li>
+      <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+    </ul>
+  </div>
+</nav>
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="col-sm-12 col-md-3">
+                <div class="thumbnail script-highlight" style="margin-top:20px;">
+                    <img src="{{ url_for('static', filename='img/members/Banker.png') }}" style="height:243px;" class="team-avatar" alt="...">
+                    <div class="caption">
+                        <h3 class="text-center">Banker</h3>
+                        <p class="text-center">CronScript Member</p>
+                        <p class="text-center">Community: DreamBot</p>
+                        <p class="text-center">Scripter</p>
+                        <p><a href="http://www.dreambot.org" class="btn btn-block cron-btn-green" role="button">Biography</a></p>
+                        <p><a href="http://www.dreambot.org" class="btn btn-block cron-btn-green" role="button">Profile</a></p>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+{% endblock %}

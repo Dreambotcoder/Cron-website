@@ -1,0 +1,37 @@
+{% extends 'template.html' %}
+
+
+{% block nav %}
+    <nav class="navbar custom-nav">
+  <div class="container-fluid" style="padding:20px;">
+    <ul class="nav navbar-nav">
+        <li><img src="{{ url_for('static',filename='img/logo-50.png')}}" style="height:50px; width: auto; margin-right: 20px;"/></li>
+      <li><a href="{{ url_for('website_controller.index') }}">Home</a></li>
+      <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Scripts<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">CronFighter</a></li>
+              <li><a href="#">CronPlanker</a></li>
+            <li><a href="#">BankerMTA</a></li>
+              <li><a href="#">BankerStaker</a></li>
+          </ul>
+        </li>
+
+         <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Products<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="{{ url_for('panel_controller.redirect_to_home') }}">Crondroid</a></li>
+            <li><a href="#">CronApp</a></li>
+          </ul>
+        </li>
+        <li class="active"><a href="{{ url_for('website_controller.info') }}">About us</a></li>
+        <li><a href="{{ url_for('website_controller.contact') }}">Contact us</a></li>
+    </ul>
+  </div>
+</nav>
+
+{% endblock %}
+
+
+{% block content %}
+{% endblock %}

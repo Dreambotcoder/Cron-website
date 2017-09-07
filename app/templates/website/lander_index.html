@@ -1,0 +1,140 @@
+{% extends 'website/website_template.html' %}
+
+{% block content %}
+    <div class="col-md-12" style="margin-bottom: 20px;">
+    <div class="col-md-2 hidden-sm">
+        <img src="{{ url_for('static',filename='img/members/Articron.png') }}" style="height: 240px; width: auto;"/>
+    </div>
+    <div class="col-md-4 hidden-sm">
+        <div class="website-description dark-background">
+            <p>Welcome to the official <span class="cron-green">CronScript</span> website!</p>
+
+            <p>This website not only serves as a software portfolio for the things we create, but is also a gateway page to access our software features.</p>
+            <p>We hope you join us in our journey to make botting more accessible!</p>
+            <p>At the moment we are mostly active on Dreambot, but you will soon see fellow cron-scripters across different communities!</p>
+            <br><p>- Articron, Founder of <span class="cron-green">CronScript</span></p>
+        </div>
+    </div>
+    <div class="col-md-6">
+  <div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+      <li data-target="#myCarousel" data-slide-to="1"></li>
+      <li data-target="#myCarousel" data-slide-to="2"></li>
+    </ol>
+
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner">
+
+      <div class="item active">
+        <img src="{{ url_for('static',filename='img/cronfighter.png') }}" alt="Los Angeles" style="width:100%;">
+        <div class="carousel-caption">
+          <h3>AIO Cronfighter</h3>
+          <p>The best AIO Fighter on dreambot</p>
+        </div>
+      </div>
+
+      <div class="item">
+        <img src="{{ url_for('static',filename='img/cronfighter.png') }}" alt="Chicago" style="width:100%;">
+        <div class="carousel-caption">
+           <h3>AIO Cronfighter</h3>
+          <p>The best AIO Fighter on dreambot</p>
+        </div>
+      </div>
+
+      <div class="item">
+        <img src="{{ url_for('static',filename='img/cronfighter.png') }}" alt="New York" style="width:100%;">
+        <div class="carousel-caption">
+           <h3>AIO Cronfighter</h3>
+          <p>The best AIO Fighter on dreambot</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Left and right controls -->
+    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+      <span class="glyphicon glyphicon-chevron-left"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" data-slide="next">
+      <span class="glyphicon glyphicon-chevron-right"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+</div>
+
+        </div>
+
+
+    <div class="col-md-12" style="background: #222; padding:20px; margin-bottom: 20px;">
+    <h1 class="text-center lander-header">Specifications</h1>
+        <div class="col-sm-12 col-md-4">
+               <div class="thumbnail lander-row">
+                    <img src="{{ url_for('static',filename='img/column1.png') }}"/>
+                    <div class="caption">
+                        <h3 class="text-center">High Quality code</h3>
+                        <p>We strive to deliver the best quality for each script and product we offer under our brand. We produce scripts as a team, meaning that each of our members have the ability to utilise their talent. In turn, this enables us to write top notch scripts which are affordable and easy to use.</p>
+                    </div>
+                </div>
+
+          </div>
+
+    <div class="col-sm-12 col-md-4">
+               <div class="thumbnail lander-row">
+                    <img src="{{ url_for('static',filename='img/column2.ico') }}"/>
+                    <div class="caption">
+                        <h3 class="text-center">HTTP Driven Network</h3>
+                        <p>All CronScript products make use of the HTTP protocol in order to ensure lightweight interactions between your bots and our systems.  Everything is built upon a RESTful web service which each of our products consume. This way all data is centralised and universal between all software we offer.</p>
+                    </div>
+                </div>
+
+          </div>
+    <div class="col-sm-12 col-md-4">
+               <div class="thumbnail lander-row">
+                    <img src="{{ url_for('static',filename='img/column3.ico') }}"/>
+                    <div class="caption">
+                        <h3 class="text-center">Security</h3>
+                        <p>Security becomes increasingly more important in today's day and age, and we can imagine trusting us with data regarding your bots is a sensitive topic. Our software is built with security as one of the top priorities in mind. Apart from basic crypto-methodologies like RSA, we also utilise AES and TSL/SSL.
+                        Your data is encrypted from start to end. We implemented additional precautions such as the "alias" feature in order to make your data truely anonymous.</p>
+                    </div>
+                </div>
+
+          </div>
+    </div>
+    <h1 class="text-center lander-header">Products</h1>
+    <div class="col-md-12">
+    <div class="col-sm4 col-md-2">
+        <img src="{{ url_for('static',filename='img/phone.png') }}" style="height: 300px;"/>
+    </div>
+        <div class="col-sm7 col-md-3 app-description">
+            <h1>CronAPP</h1>
+            <p>Available for Android 5.0+ smartphones</p>
+            <p><span class="glyphicon glyphicon-ok"></span> Real time list of operative bots per web-token</p>
+            <p><span class="glyphicon glyphicon-ok"></span> Real time data about each and every bot</p>
+            <p><span class="glyphicon glyphicon-ok"></span> Send remote messages to your bots </p>
+            <p><span class="glyphicon glyphicon-ok"></span> Keep track of your botting sessions with botting history</p>
+            <p><span class="glyphicon glyphicon-ok"></span> Configurable notifications</p>
+            <p><span class="glyphicon glyphicon-ok"></span> iOS support coming soon</p>
+
+        </div>
+        <div class="col-md-1"></div>
+    <div class="col-sm4 col-md-3">
+        <img src="{{ url_for('static',filename='img/desktop.png') }}" style="height:300px;"/>
+    </div>
+    <div class="col-sm7 col-md-3 app-description">
+            <h1>CronDroid</h1>
+            <p>Available for all internet-connected devices</p>
+            <p><span class="glyphicon glyphicon-ok"></span> Real time list of operative bots per web-token</p>
+            <p><span class="glyphicon glyphicon-ok"></span> Real time data about each and every bot</p>
+            <p><span class="glyphicon glyphicon-ok"></span> Send remote messages to your bots </p>
+            <p><span class="glyphicon glyphicon-ok"></span> Keep track of your botting sessions with botting history</p>
+            <p><span class="glyphicon glyphicon-ok"></span> Configurable notifications</p>
+            <p><span class="glyphicon glyphicon-ok"></span> iOS support coming soon</p>
+
+        </div>
+    </div>
+
+
+{% endblock %}
