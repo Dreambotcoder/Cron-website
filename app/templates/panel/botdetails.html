@@ -1,0 +1,56 @@
+{% extends "panel_template.html" %}
+
+
+{% block inner_content %}
+     <div class="col-sm-12 col-md-3">
+            <div class="panel-cron">
+                <div class="panel-heading"><span class="glyphicon glyphicon-signal"></span> General Tracking</div>
+                <div class="panel-body-cron bot-details">
+                    <h1 class="cron-green text-center">{{ bot.bot_name }} </h1>
+                    <h3 class="text-muted text-center">Tracked data</h3>
+                <ul class="var-list" style="list-style-type: none;">
+                    {% for tracked_var in bot.game_data.tracked_vars %}
+                        <li>{{ tracked_var.key }}
+
+                                {% if "%" in tracked_var.value  %}
+                                <div class="progress">
+                                      <div class="progress-bar" role="progressbar" aria-valuenow="70"
+                                      aria-valuemin="0" aria-valuemax="100" style="width:{{ tracked_var.value }}">
+                                            {{ tracked_var.value }}
+                                      </div>
+                                </div>
+                                {% else %}
+                                    <span class="float-right">
+                                        {{ tracked_var.value }}
+                                    </span>
+                                {% endif %}
+
+                        </li>
+                    {% endfor %}
+                </ul>
+                </div>
+            </div>
+        </div>
+    <div class="col-sm-12 col-md-6">
+    <div class="panel-cron">
+                <div class="panel-heading">Graphs & statistics</div>
+                <div class="panel-body-cron bot-details">
+                   test
+                </div>
+            </div>
+    </div>
+    <div class="col-sm-12 col-md-3 float-right">
+            <div class="panel-cron">
+                <div class="panel-heading"><span class="glyphicon glyphicon-briefcase"></span> Inventory</div>
+
+                <div class="panel-body-cron" style="">
+                    {%  for inventory_item in bot.game_data.inventory_items  %}
+                        <div class="rs-item" style="">
+                            <p style="position:absolute; margin: -3px -3px -3px 1px;">{{ parse_item_amount(inventory_item.amount) }}</p>
+                            <img title="{{ item_name(inventory_item.id) }}" src="{{ item_image(inventory_item.id) }}.png"/>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+{% endblock %}

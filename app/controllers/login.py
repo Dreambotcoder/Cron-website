@@ -11,9 +11,10 @@ def test():
     return render_template("test.html")
 
 
-@login_controller.route("/crondroid/remote", methods=["GET"])
-def remote():
-    return render_template("remote.html")
+@login_controller.route("/crondroid/remote/<int:remote_id>", methods=["GET"])
+def remote(remote_id):
+    return render_template("remote.html", bot_id=remote_id)
+
 
 @login_controller.route("/crondroid/login/auth", methods=['POST'])
 def auth():
@@ -38,6 +39,7 @@ def auth():
 def logout():
     session.pop('web_token', None)
     return redirect(url_for("login_controller.land"))
+
 
 @login_controller.route("/crondroid")
 @login_controller.route('/crondroid/login')

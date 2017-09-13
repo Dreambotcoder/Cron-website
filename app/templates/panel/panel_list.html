@@ -5,9 +5,65 @@
 
 
 {% block inner_content %}
-<div class="starter-template">
-    <div class="row">
-        <div class="col-md-4">
+
+<div class="col-md-9">
+    <div class="panel-cron" >
+        <div class="panel-heading">Botlist</div>
+    </div>
+
+        <div class="panel-body-cron" style="padding: 0;" id="accordion">
+            {% for bot in range(botting_data|length) %}
+
+            <div class="bot-entry">
+                <div class="row">
+                    <div class="col-md-5" style="display: inline-block">
+                        <img src="{{ url_for('static',filename='img/bot.png') }}" style="height: 50px; width: auto;"/>
+                        Bot alias: <span class="cron-green">{{ botting_data[bot]['bot_name']}}</span>
+                    </div>
+                    <div class="col-md-5">
+                        <ul style="display: inline-grid; list-style-type: none;">
+                          <li class="text-muted">IP-address: {{ botting_data[bot]['ip_address'] }}</li>
+                          <li class="text-muted">UTC clock-in: {{ botting_data[bot]['clock_in'] }}</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-2" style="font-size: 2em;">
+                        <a onclick="openBotData({{ botting_data[bot]['bot_id'] }})" class="btn btn-block cron-btn-green" role="button"><span class="glyphicon glyphicon-eye-open"> </span></a>
+
+
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+<!--
+        <div class="col-md-9">
+            <div class="panel-cron">
+                <div class="panel-heading">Bot listings</div>
+                <div class="panel-body-cron">
+                    <div class="list-group botlist">
+                        {% for bot in range(botting_data|length) %}
+                            <div class="panel panel-default">
+                                  <div class="panel-body">
+                                      <div class="float-right"><a href="https://dreambot.org/forums/index.php/user/60711-dinh/" class="btn btn-block cron-btn-green" role="button">Profile</a></div>
+                                    Basic panel example
+                                  </div>
+                            </div>
+                        <a href="#" class="list-group-item botlist-element" onclick="return testBotModal();">
+                            <h4 class="list-group-item-heading"><strong>Bot alias: </strong> {{ botting_data[bot]['bot_name']}}</h4>
+                            <p class="list-group-item-text text-muted">IP-Address: {{ botting_data[bot]['ip_address'] }}</p>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+-->
+    <div class="col-md-3">
             <div class="panel-cron">
                 <div class="panel-heading">General information</div>
                 <div class="panel-body-cron">
@@ -25,34 +81,12 @@
                             <span style="float: right;">{{ botting_data|length }}</span>
                         </p>
 
-                        <p class="text-left">Script Name:
+                        <p class="text-left">Server status:
                             <span style="float: right;">Online</span>
                         </p>
                 </div>
             </div>
         </div>
-
-
-        <div class="col-md-8">
-            <div class="panel-cron">
-                <div class="panel-heading">Bot listings</div>
-                <div class="panel-body-cron">
-                    <div class="list-group botlist">
-                        {% for bot in range(botting_data|length) %}
-                        <a href="#" class="list-group-item botlist-element" onclick="return testBotModal();">
-                            <h4 class="list-group-item-heading"><strong>Bot alias: </strong> {{ botting_data[bot]['bot_name']}}</h4>
-                            <p class="list-group-item-text text-muted">IP-Address: {{ botting_data[bot]['ip_address'] }}</p>
-                        </a>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-
-
-        </div>
-    </div>
-
-</div>
 
     <div id="domMessage" style="display:none; padding: 10px;">
         <img id="panel-logo" src="{{ url_for('static',filename='img/logo-50.png') }}">
@@ -62,10 +96,48 @@
 
 
 {% block javascript %}
+<script type="text/javascript" charset="utf-8">
+    {% if webToken %}
+            var socket = io.connect('http://' + document.domain + ':' + location.port);
+            socket.on('connect', function() {
+                socket.emit('auth', {data: '{{ webToken }}'});
+            });
+
+            socket.on('disconnect', function() {
+                socket.emit('disconnect');
+            });
+
+            socket.on('add_bot', function (data) {
+                console.log("received an add_bot");
+                console.log(data);
+                json_var = JSON.parse(data);
+                $.notify(json_var["msg"], { className: "success", position:"right bottom", style:"bootstrap", gap: 3 });
+            });
+    {% endif %}
+
+</script>
+
 <script type="text/javascript">
 
 $   (document).ajaxStop($.unblockUI);
 
+
+    function openBotData(bot_id)
+    {
+         $.ajax({
+                url: "{{ url_for('panel_controller.bot_view') }}",
+                method: 'POST',
+                contentType: "application/json",
+                data: JSON.stringify(
+                    {
+                        "bot_id" : bot_id
+                    }
+                ),
+                success: function (result) {
+                    document.write(result)
+                }
+            });
+    }
     function loadBotData(bot_id)
     {
         showWait();
@@ -99,8 +171,10 @@ $   (document).ajaxStop($.unblockUI);
         });
     }
 
-    function testBotModal() {
-        BootstrapDialog.show({
+    function testBotModal(bot_id) {
+        var url = "{{ url_for('panel_controller.test',bot_id=-1) }}";
+        var modal = new BootstrapDialog({
+            size: BootstrapDialog.SIZE_WIDE,
             message: function(dialog) {
                 var $message = $('<div></div>');
                 var pageToLoad = dialog.getData('pageToLoad');
@@ -109,9 +183,15 @@ $   (document).ajaxStop($.unblockUI);
                 return $message;
             },
             data: {
-                'pageToLoad': '{{ url_for("panel_controller.test") }}'
+                'pageToLoad': url+'/'+bot_id
             }
         });
+        modal.realize();
+        modal.getModalHeader().hide();
+        modal.getModalBody().css('background-color', '#555');
+        modal.getModalContent().css("background-color", '#555');
+
+        modal.open();
     }
     function showBotModal(json_data) {
         bot_data = JSON.parse(json_data["game_data"]);
