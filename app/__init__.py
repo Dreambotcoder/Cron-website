@@ -3,7 +3,7 @@ from pprint import pprint
 
 import time
 from flask import Flask, redirect, url_for, render_template, json, session, request
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, join_room
 
 app = Flask(__name__)
 
@@ -90,14 +90,11 @@ def page_not_found(e):
 @socketio.on('auth')
 def handle_message(data):
     if "web_token" in session and session["web_token"] == data['data']:
-        print "this guy is legitified"
-        global botlist_clients
-        botlist_clients[0] = request.sid
-    print "connected"
-    pprint(botlist_clients)
-    # time.sleep(3)
-    # emit('add_bot', json.dumps({'msg': 'MY DICK IS BIG'}), room=botlist_clients[session["web_token"]])
+        user_room = 'user_{}'.format(session['web_token'])
+        join_room(user_room)
+
+
 
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, debug=True)

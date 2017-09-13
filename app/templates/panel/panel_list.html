@@ -11,13 +11,13 @@
         <div class="panel-heading">Botlist</div>
     </div>
 
-        <div class="panel-body-cron" style="padding: 0;" id="accordion">
+        <div class="panel-body-cron" style="padding: 0;" id="botList">
             {% for bot in range(botting_data|length) %}
 
             <div class="bot-entry">
                 <div class="row">
                     <div class="col-md-5" style="display: inline-block">
-                        <img src="{{ url_for('static',filename='img/bot.png') }}" style="height: 50px; width: auto;"/>
+                        <img src="{{ url_for('static',filename='img/bot.png') }}" style="height: 50px; width: auto; margin-right: 5px;"/>
                         Bot alias: <span class="cron-green">{{ botting_data[bot]['bot_name']}}</span>
                     </div>
                     <div class="col-md-5">
@@ -111,7 +111,21 @@
                 console.log("received an add_bot");
                 console.log(data);
                 json_var = JSON.parse(data);
-                $.notify(json_var["msg"], { className: "success", position:"right bottom", style:"bootstrap", gap: 3 });
+                $.notify("the account " + json_var["name"] + " was found!", { className: "success", position:"right bottom", style:"bootstrap", gap: 3 });
+                $("#botList").append(
+                    '<div class="bot-entry"> <div class="row"> <div class="col-md-5" style="display: inline-block"> ' +
+                    '<img src="{{ url_for('static',filename='img/bot.png') }}" style="height: 50px; width: auto; margin-right: 5px;"/>' +
+                'Bot alias: <span class="cron-green">' + json_var["name"] + '</span> </div> <div class="col-md-5"> ' +
+                    '<ul style="display: inline-grid; list-style-type: none;">' +
+                    ' <li class="text-muted">IP-address: '+json_var['ip_address'] +'</li>' +
+                    ' <li class="text-muted">UTC clock-in: '+json_var['clock_in']+'</li> </ul> ' +
+                    '</div> ' +
+                    '<div class="col-md-2" style="font-size: 2em;"> ' +
+                    '<a onclick="openBotData('+json_var["id"]+')" class="btn btn-block cron-btn-green" role="button"><span class="glyphicon glyphicon-eye-open"> </span></a> ' +
+                    '</div>' +
+                    '</div> ' +
+                    '</div>'
+                )
             });
     {% endif %}
 
@@ -134,6 +148,7 @@ $   (document).ajaxStop($.unblockUI);
                     }
                 ),
                 success: function (result) {
+
                     document.write(result)
                 }
             });
@@ -152,8 +167,6 @@ $   (document).ajaxStop($.unblockUI);
                     }
                 ),
                 success: function (result) {
-                    json_data = JSON.parse(result);
-                    showBotModal(json_data)
                 }
             });
         },2000);
@@ -171,85 +184,6 @@ $   (document).ajaxStop($.unblockUI);
         });
     }
 
-    function testBotModal(bot_id) {
-        var url = "{{ url_for('panel_controller.test',bot_id=-1) }}";
-        var modal = new BootstrapDialog({
-            size: BootstrapDialog.SIZE_WIDE,
-            message: function(dialog) {
-                var $message = $('<div></div>');
-                var pageToLoad = dialog.getData('pageToLoad');
-                $message.load(pageToLoad);
 
-                return $message;
-            },
-            data: {
-                'pageToLoad': url+'/'+bot_id
-            }
-        });
-        modal.realize();
-        modal.getModalHeader().hide();
-        modal.getModalBody().css('background-color', '#555');
-        modal.getModalContent().css("background-color", '#555');
-
-        modal.open();
-    }
-    function showBotModal(json_data) {
-        bot_data = JSON.parse(json_data["game_data"]);
-
-        var table = $("<table " +
-            "data-toggle='table'> " +
-            "</table>");
-        table.bootstrapTable({
-            columns: [{
-                field: 'key_value',
-                title: 'Key parameter'
-            }, {
-                field: 'value_parameter',
-                title: 'Value parameter'
-            }]
-        });
-        data = [];
-        $.each(bot_data, function(k, v) {
-            data.push({key_value : k, value_parameter : v});
-        });
-        table.bootstrapTable("append",data);
-        var dialog = new BootstrapDialog(
-            {
-            message: function(dialogRef)
-            {
-
-                return table;
-            },
-
-            buttons: [
-                {
-                    label: 'Request bot screenshot',
-                    cssClass: 'cron-btn-green',
-                    action: function(dialog) {
-                        //dialog.setTitle('Request screenshot');
-                    }
-                },
-                {
-                    label: 'Close',
-                    cssClass: "btn-danger",
-                    action: function(dialog) {
-                        dialog.close();
-                    }
-                }
-            ],
-            closable: false,
-                draggable: true
-        });
-
-        dialog.realize();
-        dialog.setTitle("Bot data for alias: " + json_data['bot_name']);
-        dialog.getModalHeader().css('background-color',"#2ecc71");
-        dialog.getModalHeader().css('border-bottom',"0");
-        dialog.getModalFooter().css("background-color","#222");
-        dialog.getModalFooter().css("border-top","1px solid #2ecc71");
-        dialog.getModalBody().css('background-color', '#222');
-        dialog.getModalBody().css('color', '#fff');
-        dialog.open();
-    }
 </script>
 {% endblock %}

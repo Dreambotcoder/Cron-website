@@ -2,11 +2,36 @@ from pprint import pprint
 
 import requests
 from flask import Blueprint, session, url_for, redirect, render_template, json, request, abort
-
+from flask_socketio import emit
 
 from app.config import API_URL
 
 panel_controller = Blueprint('panel_controller', __name__)
+
+
+@panel_controller.route("/emit", methods=["POST"])
+def emit_stuff():
+    bot_alias = request.json.get("bot_alias")
+    web_token = request.json.get("web_token")
+    bot_id = request.json.get("bot_id")
+    ip_address = request.json.get("ip_address")
+    clock_in = request.json.get("clock_in")
+    user_room = 'user_{}'.format(web_token)
+    emit('add_bot', json.dumps(
+        {
+            'name': bot_alias,
+            "id": bot_id,
+            "ip_address": ip_address,
+            "clock_in": clock_in
+        }
+    ), room=user_room, namespace="")
+    return "done"
+
+
+@panel_controller.route("/crondroid/entryload")
+def entry_load():
+    return render_template("panel/botlist_entry.html")
+
 
 @panel_controller.route("/crondroid/panel/")
 @panel_controller.route("/crondroid/panel")
