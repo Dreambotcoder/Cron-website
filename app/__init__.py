@@ -65,7 +65,13 @@ def item_name():
         try:
             item_name = data[str(item_id)]["name"]
         except KeyError as e:
-            return ""
+            SITE_ROOT_ = os.path.realpath(os.path.dirname(__file__))
+            uri_ = os.path.join(SITE_ROOT_, "static/json", 'nontradeables.json')
+            data_ = json.load(open(uri_))
+            try:
+                item_name = data_[str(item_id)]["name"]
+            except KeyError as e:
+                item_name = ""
         return item_name
 
     return dict(item_name=_item_name)
