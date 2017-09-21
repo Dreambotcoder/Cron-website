@@ -8,13 +8,19 @@
     <div class="col col-md-3"></div>
         <div class="col col-md-6">
             <div>
-                <img src="{{ url_for('static',filename="img/logo.png") }}" \ id="login-logo">
+                <img src="{{ url_for('static',filename="img/logo-50.png") }}" \ id="login-logo">
             </div>
                 <form onsubmit="return authenticate();" class="auth-form" id="login-form" method="post">
-                        <input autocomplete="off" type="text" class="auth-form-element" name="web_token" id="email" placeholder="Web-Token">
+                        <input autocomplete="off" type="text" class="auth-form-element" name="web_token" placeholder="Web-Token" id="email" readonly onfocus="if (this.hasAttribute('readonly')) {
+    this.removeAttribute('readonly');
+    // fix for mobile safari to show virtual keyboard
+    this.blur();    this.focus();  }">
                         <br>
                         <br>
-                        <input type="password" class="auth-form-element" id="pwd" name="token_pass" placeholder="Token-Pass">
+                        <input type="password" class="auth-form-element" id="pwd" name="token_pass" placeholder="Token-Pass" readonly onfocus="if (this.hasAttribute('readonly')) {
+    this.removeAttribute('readonly');
+    // fix for mobile safari to show virtual keyboard
+    this.blur();    this.focus();  }">
                     <br>
                     <br>
                         <button type="submit" class="btn btn-block main-green-btn">Load bots</button>

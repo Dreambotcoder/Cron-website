@@ -3,6 +3,8 @@
 {% block title %} Crondroid {% endblock %}
 
 
+{% set onlist = "true" %}
+
 
 {% block inner_content %}
 
@@ -14,10 +16,10 @@
         <div class="panel-body-cron" style="padding: 0;" id="botList">
             {% for bot in range(botting_data|length) %}
 
-            <div class="bot-entry">
+            <div class="bot-entry" id="bot-{{ botting_data[bot]['bot_id'] }}">
                 <div class="row">
                     <div class="col-md-5" style="display: inline-block">
-                        <img src="{{ url_for('static',filename='img/bot.png') }}" style="height: 50px; width: auto; margin-right: 5px;"/>
+                        <img src="{{ url_for('static',filename='img/logo-50.png') }}" style="height: 50px; width: auto; margin-right: 5px;"/>
                         Bot alias: <span class="cron-green">{{ botting_data[bot]['bot_name']}}</span>
                     </div>
                     <div class="col-md-5">
@@ -68,7 +70,7 @@
             <div class="panel-cron">
                 <div class="panel-heading">General information</div>
                 <div class="panel-body-cron">
-                    <img id="panel-logo" src="{{ url_for('static',filename='img/logo-50.png') }}">
+
                         <p class="text-left">Web-Token:
                             <span style="float: right;">{{ webToken }}</span>
                         </p>
@@ -79,7 +81,7 @@
                             <span style="float: right;">{{ script_data['script_data'][0]["script_author"] }}</span>
                         </p>
                         <p class="text-left">Total bots:
-                            <span style="float: right;">{{ botting_data|length }}</span>
+                            <span style="float: right;" id="botcount">{{ botting_data|length }}</span>
                         </p>
 
                         <p class="text-left">Server status:
@@ -98,7 +100,15 @@
 
 {% block javascript %}
 <script type="text/javascript" charset="utf-8">
-    {% if webToken %}
+
+
+
+
+
+    {% if webToken and onlist == "true" %}
+
+
+
             var socket = io.connect('http://' + document.domain + ':' + location.port);
             socket.on('connect', function() {
                 socket.emit('auth', {data: '{{ webToken }}'});
@@ -108,6 +118,16 @@
                 socket.emit('disconnect');
             });
 
+            socket.on('remove_bot', function(data) {
+                console.log("received an remove_bot");
+                console.log(data);
+                json_var = JSON.parse(data);
+                $.notify("the account " + json_var["name"] + " disconnected!", { className: "error", position:"right bottom", style:"bootstrap", gap: 3 });
+               $("#bot-"+json_var["id"]).slideUp("slow", function(){ $(this).remove();});
+                countSelector = $("#botcount");
+                var count = parseInt(countSelector.text());
+                countSelector.text(""+(count + -1));
+            });
             socket.on('add_bot', function (data) {
                 console.log("received an add_bot");
                 console.log(data);
@@ -115,7 +135,7 @@
                 $.notify("the account " + json_var["name"] + " was found!", { className: "success", position:"right bottom", style:"bootstrap", gap: 3 });
                 $("#botList").append(
                     '<div class="bot-entry"> <div class="row"> <div class="col-md-5" style="display: inline-block"> ' +
-                    '<img src="{{ url_for('static',filename='img/bot.png') }}" style="height: 50px; width: auto; margin-right: 5px;"/>' +
+                    '<img src="{{ url_for('static',filename='img/logo-50.png') }}" style="height: 50px; width: auto; margin-right: 5px;"/>' +
                 'Bot alias: <span class="cron-green">' + json_var["name"] + '</span> </div> <div class="col-md-5"> ' +
                     '<ul style="display: inline-grid; list-style-type: none;">' +
                     ' <li class="text-muted">IP-address: '+json_var['ip_address'] +'</li>' +
@@ -126,7 +146,11 @@
                     '</div>' +
                     '</div> ' +
                     '</div>'
-                )
+                );
+                countSelector = $("#botcount");
+                var count = parseInt(countSelector.text());
+                countSelector.text(""+(count + 1));
+
             });
     {% endif %}
 
@@ -150,7 +174,8 @@ $   (document).ajaxStop($.unblockUI);
                 ),
                 success: function (result) {
 
-                    document.write(result)
+                    document.write(result);
+
                 }
             });
     }
@@ -168,6 +193,7 @@ $   (document).ajaxStop($.unblockUI);
                     }
                 ),
                 success: function (result) {
+                    console.log(result);
                 }
             });
         },2000);

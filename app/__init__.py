@@ -3,13 +3,16 @@ from pprint import pprint
 
 import time
 from flask import Flask, redirect, url_for, render_template, json, session, request
-from flask_socketio import SocketIO, emit, join_room
+from flask_socketio import SocketIO, emit, join_room, leave_room
 
 app = Flask(__name__)
 
 # SOCKET-IO
 socketio = SocketIO(app)
 
+
+def get_root():
+    return os.path.realpath(os.path.dirname(__file__))
 
 from app.controllers.login import login_controller
 from app.controllers.panel import panel_controller
@@ -82,10 +85,13 @@ def parse_item_amount():
     def _parse_item_amount(amount):
         if int(amount) > 1000000:
             return str(int(float(amount) / float(1000000))) + "M"
+        elif int(amount) == 1:
+            return ""
         else:
             return amount
 
     return dict(parse_item_amount=_parse_item_amount)
+
 
 
 @app.errorhandler(500)
@@ -100,7 +106,24 @@ def handle_message(data):
         join_room(user_room)
 
 
+@socketio.on('details')
+def handle_details(data):
+    if "web_token" in session and session["web_token"] == data['data']:
+        detail_room = 'details_{}'.format(session['web_token']+"_"+str(data['bot_id']))
+        print detail_room
+        join_room(detail_room)
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    user_room = 'user_{}'.format(session['web_token'])
+    leave_room(user_room)
+    print 'disconnected'
+
+
+
+
+
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app,debug=True)
