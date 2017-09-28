@@ -12,6 +12,78 @@ body {
     font-size: 11px;
 }
 
+.dashboard-panel {
+    padding: 10px;
+    background: #222;
+    border: 1px groove #2ecc71;
+}
+
+#bot-searching > span {
+    background: #222;
+    color: #2ecc71;
+    border-color: #222;
+}
+#bot-searching > input {
+    background: #222;
+    color: #2ecc71;
+    border: 0;
+}
+
+.dashboard-panel > .panel-descriptor {
+    font-family: "Exo", sans-serif;
+    font-size: 1.4em;
+    padding: 10px;
+    text-align: center;
+}
+
+.dashboard-panel > .panel-img > img {
+    width: 80px;
+    height: auto;
+    display:block;
+    margin:auto;
+    padding: 10px;
+}
+
+.script-entry-img {
+    height: 100px;
+    width: auto;
+}
+
+.media-body {
+    font-family: "Exo", sans-serif;
+    font-size: 1em;
+}
+
+
+
+
+.script-entry {
+    padding: 15px;
+    border-bottom: 1px solid gainsboro;
+}
+
+.script-entry > .script-entry-content {
+    display: inline-block;
+}
+
+.script-entry > img {
+    height: 100px;
+    width: auto;
+    display: inline-block;
+}
+
+.dashboard-panel > .panel-counter {
+     font-family: "Exo", sans-serif;
+    font-size: 2em;
+    padding: 10px;
+    text-align: center;
+    color: #2ecc71;
+    border-top: 1px groove #2ecc71;
+}
+.dashboard-panel > p {
+
+}
+
 .dark-background {
     background: #333;
 }
@@ -213,7 +285,7 @@ footer {
 
 .panel-cron > .panel-heading {
     background: #2ecc71;
-    border: 1px solid #2ecc71 !important;
+    border: 1px solid #2ecc71;
     font-weight:bold;
 }
 
@@ -246,7 +318,7 @@ footer {
 }
 
 .cron-green {
-    color: #2ecc71;
+    color: #2ecc71 !important;
 }
 #login-logo {
     margin: auto;
@@ -486,7 +558,73 @@ footer {
     width: 100%;
     height: 100%;
     z-index: 1000;
+    background: rgba(0,0,0,0.6);
 }
+
+
+
+
+#loader-wrapper > p {
+    position: fixed;
+    top: 70%;
+    width: 100%;
+    text-align: center;
+    font-size: 1.2em;
+
+}
+
+.remote-bot {
+    padding: 10px;
+    background: #222;
+    border: 1px solid #444;
+    color: gainsboro;
+    margin-bottom: 5px;
+}
+
+
+#selected-bots {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px;
+}
+#selected-bots > li {
+    padding: 8px;
+    font-size: 1em;
+    background: #444;
+    margin-bottom: 6px;
+    font-family: "Exo", sans-serif;
+    text-align: left;
+}
+
+.selected-bot {
+    border: 1px solid #2ecc71 !important;
+}
+.remote-bot-processing {
+    padding: 10px;
+    background: #222;
+    border: 1px solid #444;
+    color: gainsboro;
+    margin-bottom: 5px;
+}
+
+.remote-bot-processing > i {
+    color: #2ecc71;
+    margin-right: 5px;
+}
+
+.remote-bot:hover {
+    border: 1px solid #2ecc71;
+}
+
+.remote-bot > i {
+    color: #2ecc71;
+}
+
+.remote-bot > span {
+    margin-left: 5px;
+}
+
+
 #loader {
     display: block;
     position: relative;
@@ -553,4 +691,9 @@ footer {
         -ms-transform: rotate(360deg);  /* IE 9 */
         transform: rotate(360deg);  /* Firefox 16+, IE 10+, Opera */
     }
+}
+
+.dark-panel {
+    background: #222 !important;
+    border: 1px solid #444 !important;
 }

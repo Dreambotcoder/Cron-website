@@ -5,29 +5,80 @@
 
 
 {% block inner_content %}
-<div class="starter-template">
-<div class="alert alert-success" role="alert"><strong>Notice: </strong>Both the mobile application and web application are in alpha testing! report bugs!</div>
-<h1 class="page-header">Latest CronScript products</h1>
+<div class="row" style="margin-bottom: 20px;">
+    <div class="col-md-3">
+    <div class="dashboard-panel">
+        <div class="panel-descriptor">Web-Token</div>
+        <div class="panel-img"><img src="{{ url_for('static',filename='img/logo-50.png') }}"/></div>
+        <div class="panel-counter">{{ webToken }}</div>
+    </div>
+    </div>
+<div class="col-md-3">
+    <div class="dashboard-panel">
+        <div class="panel-descriptor">Script name</div>
+        <div class="panel-img"><img src="{{ url_for('static',filename='img/logo-50.png') }}"/></div>
+        <div class="panel-counter">{{ current_script.script_name }}</div>
+    </div>
+    </div>
+    <div class="col-md-3">
+    <div class="dashboard-panel">
+        <div class="panel-descriptor">Script Author</div>
+        <div class="panel-img"><img src="{{ url_for('static',filename='img/logo-50.png') }}"/></div>
+        <div class="panel-counter">{{ current_script.script_author }}</div>
+    </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-panel">
+            <div class="panel-descriptor">Total bots online</div>
+            <div class="panel-img"><img src="{{ url_for('static',filename='img/logo-50.png') }}"/></div>
+            <div class="panel-counter">{{ bot_count }}</div>
+        </div>
+    </div>
+</div>
+
     <div class="row">
-        {% for i in range(script_data|length) %}
-            <div class="col-sm-6 col-md-3">
-                <div class="thumbnail script-highlight">
-                    <img src="{{ url_for('static', filename='img/'+script_data[i]['script_image']) }}" alt="...">
-                    <div class="caption">
-                        <h3>{{ script_data[i]['script_name'] }}</h3>
-                        <p>Author: {{ script_data[i]['script_author'] }}</p>
-                        <p>{{ script_data[i]['script_description'] }}</p>
-                        <p><a href="{{ script_data[i]['script_topic_url'] }}" class="btn btn-block cron-btn-green" role="button">Go to forum thread</a></p>
+    <div class="col-md-7">
+        <div class="panel-cron">
+                <div class="panel-heading">News & Patch notes</div>
+
+                    {% for announcement in announcements %}
+                        <div class="panel-body-cron" style="">
+                    <div class="panel-cron">
+                        <div class="panel-heading dark-panel">{{ announcement.title }}
+                            <p class="float-right text-muted">Posted: {{ announcement.post_date }}</p></div>
+                        <div class="panel-body-cron dark-panel" style="padding: 10px; border-top: 0;">
+                            {{ announcement.text|safe }}
+                        </div>
                     </div>
                 </div>
+                    {% endfor %}
+        </div>
+
+    </div>
+    <div class="col-md-5">
+            <div class="panel-cron">
+                <div class="panel-heading">Latest CronScript releases</div>
+                <div class="panel-body-cron" style="padding: 0">
+                    {% for i in range(script_data|length) %}
+                        <div class="media script-entry">
+                          <div class="media-left panel-img">
+                            <a href="#">
+                              <img class="media-object script-entry-img" src="{{ url_for('static', filename='img/'+script_data[i]['script_image']) }}" alt="...">
+                            </a>
+                          </div>
+                          <div class="media-body">
+                            <h3 class="media-heading cron-green">{{ script_data[i]['script_name'] }}</h3>
+                              <p class="text-muted">Author: {{ script_data[i]['script_author'] }}</p>
+                            {{ script_data[i]['script_description'] }}
+                              <a href="{{ script_data[i]['script_topic_url'] }}" class="btn cron-btn-green"  style="float: right;" role="button">Go to forum thread</a>
+                          </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
             </div>
-        {% endfor %}
+        </div>
+    </div>
 
-
-       <!-- <div id="loader"></div> -->
-</div>
-
-
-</div>
 
 {% endblock %}

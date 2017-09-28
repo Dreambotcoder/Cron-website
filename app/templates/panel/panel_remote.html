@@ -6,6 +6,157 @@
 
 {% block inner_content %}
 
-    <span>Logged in with web-token: {{ webToken }}</span>
+    <div class="col-md-2" style="position: fixed; background-color: #222;">
+    <h2 class="text-center">Controls</h2>
+    <h4 class="text-center">Selectors</h4>
+    <div class="input-group" id="bot-searching" style="margin-bottom: 10px;">
+          <span class="input-group-addon" id="sizing-addon2"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
+          <input type="text" class="form-control" placeholder="Filter bots" aria-describedby="sizing-addon2">
+    </div>
+    <a href="#" title="Select all available bots" class="btn cron-btn-green btn-block"  style="" role="button">Select All</a>
+    <h4 class="text-center">Remote commands</h4>
+     {% for command in commands %}
+         <a href="#" title="{{ command.description }}" class="btn cron-btn-green btn-block"  style="" onclick="sendRemoteCommand('{{ command.name }}')" role="button">{{ command.name }}</a>
+    {% endfor %}
+    <h4 class="text-center">CMD Queue</h4>
+    <ul id="selected-bots">
+        {% for bot in polling_bots %}
+            <li id="list-'{{ bot.bot_name }}'"> {{ bot.bot_name }} <p class="pull-right text-muted">
+                <i class="fa fa-cog fa-spin" style="font-size:15px"></i> Polling {{ bot.remote_command }}</p></li>
+        {% endfor %}
+    </ul>
+    </div>
 
+    <div class="col-md-offset-3 col-md-3">
+    <div class="available-bots">
+        <h2 class="text-center">Available Bots</h2>
+        {% for bot in available_bots %}
+            <div class="remote-bot" id="{{ bot.bot_name }}" onclick="onBotClick('{{ bot.bot_name }}');">
+                <span class="text-muted">Bot Alias: </span> {{ bot.bot_name }}
+            </div>
+        {% endfor %}
+
+    </div>
+
+    </div>
+
+    <div class="col-md-6">
+        <h2 class="text-center">Process Report</h2>
+
+        {% for bot in processing_bots %}
+        <div class="remote-bot-processing" id="process-{{ bot.bot_name }}">
+            <span class="text-muted">Bot alias: </span><span class="cron-green">{{ bot.bot_name }}</span>
+            <span class="text-muted">Command: </span>{{ bot.remote_command }}
+            <span class="text-muted">Progress: </span> <span class="message">{{ bot.remote_message }}</span>
+
+            <span class="pull-right text-muted">  Processing command...   </span>
+            <i class="fa fa-cog fa-spin pull-right" style="font-size:15px"></i>
+
+            <div id="progress-bar-{{ bot.bot_name }}" style="padding: 10px 0;"></div>
+
+        </div>
+        {% endfor %}
+
+
+    </div>
+
+
+
+
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/progressbar.js') }}"></script>
+    <script type="text/javascript">
+
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+    socket.on('connect', function() {
+        socket.emit('remote', {data: '{{ webToken }}'});
+    });
+
+    socket.on('update_process', function(data) {
+                console.log("received an update_process");
+                console.log(data);
+                json_data = JSON.parse(data);
+                name = json_data['name'];
+                $('#process-'+name+ " span.message").text(json_data['message']);
+                setProgressBar(name,json_data['percentage']);
+    });
+
+        var selected_bots = [];
+        var progress_bars = {};
+        var polling_bots = [];
+
+        {% for bot in processing_bots %}
+            setProgressBar('{{ bot.bot_name }}','{{ bot.remote_percentage }}');
+        {% endfor %}
+
+    function sendRemoteCommand(command) {
+        for (var i = 0; i < selected_bots.length; i++) {
+            var botName = selected_bots[i];
+            if ($.inArray(botName,polling_bots) === -1) {
+                if ($.inArray(botName, selected_bots) <= -1) {
+                    console.log("here2");
+                    return;
+                }
+                var bot_entry = $("#list-" + botName);
+                $("#"+botName).slideUp("slow", function(){ $(this).remove();});
+                bot_entry.find("p").html(' <i class="fa fa-cog fa-spin" style="font-size:15px"></i> Submitting...');
+                (function(bot_name) {
+                    $.ajax({
+                    url: "{{ url_for('panel_controller.bot_view') }}",
+                    method: 'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify(
+                        {
+                            "bot_id" : 1
+                        }
+                    ),
+                    success: function(data) {
+                        //console.log(data);
+                        $("#list-"+bot_name).find("p").html(' <i class="fa fa-cog fa-spin" style="font-size:15px"></i> Polling: ' + command);
+                        polling_bots.push(bot_name);
+                    }
+                });
+                })(botName);
+            }
+            console.log(polling_bots);
+
+
+        }
+    }
+
+    function setProgressBar(botName, percentage) {
+        if (progress_bars[botName] === undefined) {
+            progress_bars[botName] = new ProgressBar.Line('#progress-bar-' + botName,
+                {
+                    trailColor: '#333',
+                    easing: 'easeInOut',
+                    color: '#2ecc71'
+
+                }
+            );
+        }
+        progress_bars[botName].animate(parseInt(percentage)/100);
+    }
+
+    function onBotClick(botName) {
+        var bot = $('#' + botName);
+        var botlist = $('#selected-bots');
+        if (!bot.hasClass("selected-bot")) {
+            bot.addClass("selected-bot");
+            if ($.inArray(botName, selected_bots) <= -1) {
+                selected_bots.push(botName);
+                botlist.append('<li id="list-'+botName+'">' + botName + '<p class="pull-right text-muted">In Queue</p></li>')
+            }
+        } else {
+            bot.removeClass("selected-bot");
+            botlist.find("#list-"+botName).remove();
+            selected_bots = jQuery.grep(selected_bots, function (value) {
+                return value !== botName;
+            });
+        }
+    }
+    </script>
 {% endblock %}

@@ -38,6 +38,25 @@ def inventory_loader():
     render_template("panel/modals/inventory.html", inventory=json.dumps(data))
 
 
+@panel_controller.route('/emit/remote/process', methods=["POST"])
+def emit_remote_process():
+    web_token = request.json.get("web_token")
+    bot_name = request.json.get("bot_name")
+    bot_id = request.json.get("bot_id")
+    percentage = request.json.get("percentage")
+    message = request.json.get("message")
+    user_room = 'remote_{}'.format(web_token)
+    emit('update_process', json.dumps(
+        {
+            "name": str(bot_name),
+            "id": int(bot_id),
+            "percentage": int(percentage),
+            "message": str(message)
+        }
+    ),room=user_room, namespace="")
+    return ""
+
+
 @panel_controller.route("/emit", methods=["POST"])
 def emit_stuff():
     bot_alias = request.json.get("bot_alias")
@@ -79,27 +98,15 @@ def remove_bot():
     emit('remove_bot', json.dumps(
         {
             "id": bot_id,
-            "name" : bot_name
+            "name": bot_name
         }
     ), room=user_room, namespace="")
     return ""
 
 
-@panel_controller.route("/crondroid/entryload")
-def entry_load():
-    return render_template("panel/botlist_entry.html")
-
-
-@panel_controller.route("/crondroid/panel/")
 @panel_controller.route("/crondroid/panel")
 def redirect_to_home():
     return redirect(url_for('panel_controller.land'))
-
-
-@panel_controller.route("/crondroid/test/<int:bot_id>")
-def test(bot_id):
-    print bot_id
-    return render_template("panel/modals/bot_info.html")
 
 
 @panel_controller.route("/crondroid/panel/home")
@@ -107,14 +114,24 @@ def land():
     if "web_token" not in session:
         return redirect(url_for("login_controller.land"))
     post_dict = {
-        "backend-token": "fuck-me-hard-daddy"
+        "backend-token": "fuck-me-hard-daddy",
+        "web_token": session["web_token"]
     }
     response = requests.post(API_URL + "/api/backend/all_scripts", json=post_dict)
     script_data = json.loads(response.text)
+
+    announcements = requests.get(API_URL + "/api/announcements")
+    announcement_data = json.loads(announcements.text)
+    current_script = {}
+    for script in script_data['result']:
+        if script["script_id"] == int(session["script_id"]):
+            current_script = script
     return render_template("panel/panel_home.html",
                            webToken=session['web_token'],
                            activeNav="home",
-                           script_data=script_data['result'])
+                           script_data=script_data['result'],
+                           bot_count=script_data['bot_count'],
+                           current_script=current_script, announcements=announcement_data)
 
 
 @panel_controller.route("/crondroid/panel/botlist")
@@ -144,7 +161,24 @@ def botlist():
 def remote_control():
     if "web_token" not in session:
         return redirect(url_for("login_controller.land"))
-    return render_template("panel/panel_remote.html", webToken=session['web_token'], activeNav="remote")
+    post_dict = {
+        "script_id": int(session['script_id'])
+    }
+    post_dict_2 = {
+        "web_token" : session["web_token"],
+        "script_id" : int(session["script_id"])
+    }
+    response = requests.post(API_URL + "/api/remote", json=post_dict)
+    commands_dict = json.loads(response.text)
+    bots_request = requests.post(API_URL + "/api/bots/web/format/remote", json=post_dict_2)
+    bot_dict = json.loads(bots_request.text)
+    return render_template("panel/panel_remote.html",
+                           webToken=session['web_token'],
+                           activeNav="remote",
+                           commands=commands_dict,
+                           available_bots=bot_dict["available"],
+                           processing_bots=bot_dict["processing"],
+                           polling_bots=bot_dict['polling'])
 
 
 @panel_controller.route("/crondroid/panel/history")
@@ -193,10 +227,3 @@ def bot_view():
     if "web_token" not in session:
         return abort(400)
     return render_template("panel/botdetails.html", bot=data, webToken=session['web_token'], bot_id=bot_id)
-
-
-@panel_controller.route("/crondroid/panel/bot_modal/", methods=["GET"])
-def bot_modal(bot_id):
-    if "web_token" not in session:
-        return abort(400)
-    return render_template("panel/bot_modal.html")

@@ -30,6 +30,7 @@ def auth():
     response = requests.post(API_URL + "/api/authenticate", json=post_dict)
     if response.status_code == 200:
         session['web_token'] = web_token
+        session['script_id'] = response.text
         return url_for("panel_controller.land")
     else:
         abort(400)
