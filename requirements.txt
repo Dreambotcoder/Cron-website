@@ -5,3 +5,4 @@ Werkzeug==0.12.1
 requests==2.7.0
 bs4
 gunicorn
+redis

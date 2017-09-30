@@ -1,3 +1,13 @@
+/* Import */
+
+/* Variables */
+
+@font-face {
+  font-family: 'Industry-Book';
+  src: url('../fonts/Industry-Book.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
 
 body {
     background-color: #333;
@@ -30,7 +40,7 @@ body {
 }
 
 .dashboard-panel > .panel-descriptor {
-    font-family: "Exo", sans-serif;
+    font-family: "Industry-Book", sans-serif;
     font-size: 1.4em;
     padding: 10px;
     text-align: center;
@@ -50,7 +60,7 @@ body {
 }
 
 .media-body {
-    font-family: "Exo", sans-serif;
+    font-family: "Industry-Book", sans-serif;
     font-size: 1em;
 }
 
@@ -73,7 +83,7 @@ body {
 }
 
 .dashboard-panel > .panel-counter {
-     font-family: "Exo", sans-serif;
+     font-family: "Industry-Book", sans-serif;
     font-size: 2em;
     padding: 10px;
     text-align: center;
@@ -89,7 +99,7 @@ body {
 }
 
 .cron-text {
-    font-family: 'Exo', sans-serif;
+    font-family: 'Industry-Book', sans-serif;
     font-size: 1.2em;
     color: whitesmoke;
 }
@@ -105,7 +115,7 @@ body {
 
 .var-list > li {
     text-decoration: none;
-    font-family: "Exo", sans-serif;
+    font-family: "Industry-Book", sans-serif;
     font-size: 1.3em;
     color: whitesmoke;
     padding: 10px 10px 10px 0;
@@ -117,7 +127,7 @@ body {
 }
 
 .bot-details > p {
-    font-family: "Exo", sans-serif;
+    font-family: "Industry-Book", sans-serif;
     font-size: 1.2em;
     color: whitesmoke;
 }
@@ -161,13 +171,13 @@ footer {
 
 .lander-row > .caption > h3 {
     color: whitesmoke;
-    font-family: 'Exo', sans-serif;
+    font-family: 'Industry-Book', sans-serif;
 }
 
 
 .lander-row > .caption > p {
     color: whitesmoke;
-    font-family: 'Exo', sans-serif;
+    font-family: 'Industry-Book', sans-serif;
     font-size: 1.3em;
 }
 
@@ -180,7 +190,7 @@ footer {
 
 .app-description > p {
     color: whitesmoke;
-    font-family: 'Exo', sans-serif;
+    font-family: 'Industry-Book', sans-serif;
     font-size: 1.3em;
 }
 
@@ -190,13 +200,13 @@ footer {
 
 .app-description > h1 {
     color: #2ecc71;
-    font-family: 'Exo', sans-serif;
+    font-family: 'Industry-Book', sans-serif;
 }
 
 
 .lander-header {
     color: #2ecc71;
-    font-family: 'Exo', sans-serif;
+    font-family: 'Industry-Book', sans-serif;
 }
 
 
@@ -204,7 +214,7 @@ footer {
 .main-green-btn {
     background-color: #2ecc71;
     color: white;
-    font-family: "Exo", sans-serif;
+    font-family: "Industry-Book", sans-serif;
     font-size: 15px;
     height: 50px;
 }
@@ -217,7 +227,7 @@ footer {
 .cron-btn-green {
     background-color: #2ecc71;
     color: white;
-    font-family: "Exo", sans-serif;
+    font-family: "Industry-Book", sans-serif;
     font-size: 15px;
     text-align: center;
 }
@@ -313,7 +323,7 @@ footer {
 }
 .website-description > p {
      color: whitesmoke;
-    font-family: 'Exo', sans-serif;
+    font-family: 'Industry-Book', sans-serif;
     font-size: 1.3em;
 }
 
@@ -342,8 +352,8 @@ footer {
 }
 
 .active-nav-tab {
-   background-color: #2ecc71;
-    color:white !important;
+   border-left: 3px solid #2ecc71;
+    color:#2ecc71 !important;
 }
 
 .navbar-fixed-left .navbar-nav > li > a {
@@ -494,16 +504,15 @@ footer {
 
 .navbar-primary-menu li a {
   display: block;
-  padding: 25px 10px;
-  font-family: "Exo", "SansSerif", serif;
+  padding: 12px 12px;
+  font-family: "Industry-Book", "SansSerif", serif;
   text-align: left;
-    font-size: 1.1em;
-  border-bottom:solid 1px #444;
+  font-size: 1.2em;
   color: #ccc;
 }
 
 .navbar-primary-menu li a:hover {
-  background-color: #2ecc71;
+  border-left: 3px solid #2ecc71;
   text-decoration: none;
   color: white;
 }
@@ -519,7 +528,7 @@ footer {
 .bot-entry {
     padding:10px;
     font-size: 1.1em;
-    font-family: "Exo", serif;
+    font-family: "Industry-Book", serif;
     border-bottom: 1px solid #6e6e6e;
 }
 
@@ -592,7 +601,7 @@ footer {
     font-size: 1em;
     background: #444;
     margin-bottom: 6px;
-    font-family: "Exo", sans-serif;
+    font-family: "Industry-Book", sans-serif;
     text-align: left;
 }
 
@@ -696,4 +705,59 @@ footer {
 .dark-panel {
     background: #222 !important;
     border: 1px solid #444 !important;
+}
+
+
+#bot-timeline {
+    content: "test";
+    list-style: none;
+    font-family: 'Industry-Book', sans-serif;
+    border-left: 4px solid #2ecc71;
+    padding: 0 10px 10px;
+}
+
+#bot-timeline > li.time-indicator > .timeline-dot {
+    width: 12px;
+    height: 12px;
+    display:inline-block;
+    background: #00ff6c;
+    content: "   ";
+    margin-left: -18px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+#bot-timeline > li.time-indicator {
+    border-radius: 50%;
+    font-size: 1.4em;
+    color: lightgrey;
+    margin-bottom: 15px;
+    margin-top: 15px;
+
+}
+
+
+.entry-alias > span {
+    font-size: 1.3em;
+}
+
+li.time-indicator > span {
+    font-size: 0.8em;
+    color: #2ecc71;
+}
+#bot-timeline > li.timeline-entry {
+    padding: 5px;
+    margin-bottom: 5px;
+    background-color: #222;
+    border-bottom: 1px solid #111111;
+    box-shadow: 2px 2px 0 #222;
+    border-top: 1px solid #111111;
+    margin-left: 10px;
+
+}
+
+.timeline-data {
+    background: #555 !important;
+    border: 1px solid #666 !important;
+    box-shadow: none !important;
 }

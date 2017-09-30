@@ -6,6 +6,27 @@
 
 {% block inner_content %}
 
-    <span>Logged in with web-token: {{ webToken }}</span>
+    <div class="col-md-6">
+    <ul id="bot-timeline">
+        {% for timeline_entry in timeline %}
+            <li class="time-indicator">
+                <div class="timeline-dot"></div>
+                <span>{{ timeline_entry.date }}</span>
+            </li>
+            {% for  bot in timeline_entry.logs %}
+                <li class="timeline-entry">
+                    <div class="entry-alias"><span class="cron-green">{{ bot.name }}</span>
+                        <span class="text-muted pull-right" style="font-size: 1.1em;">Runtime: {{ bot.runtime }}</span>
+
+                    </div>
+
+                    <span class="text-muted">IP: {{ bot.ip }}</span>
+
+                </li>
+                <li class="timeline-entry timeline-data" id="{{ bot.id }}">hey</li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+    </div>
 
 {% endblock %}

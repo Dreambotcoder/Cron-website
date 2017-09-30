@@ -49,30 +49,6 @@
     </div>
 
 
-<!--
-        <div class="col-md-9">
-            <div class="panel-cron">
-                <div class="panel-heading">Bot listings</div>
-                <div class="panel-body-cron">
-                    <div class="list-group botlist">
-                        {% for bot in range(botting_data|length) %}
-                            <div class="panel panel-default">
-                                  <div class="panel-body">
-                                      <div class="float-right"><a href="https://dreambot.org/forums/index.php/user/60711-dinh/" class="btn btn-block cron-btn-green" role="button">Profile</a></div>
-                                    Basic panel example
-                                  </div>
-                            </div>
-                        <a href="#" class="list-group-item botlist-element" onclick="return testBotModal();">
-                            <h4 class="list-group-item-heading"><strong>Bot alias: </strong> {{ botting_data[bot]['bot_name']}}</h4>
-                            <p class="list-group-item-text text-muted">IP-Address: {{ botting_data[bot]['ip_address'] }}</p>
-                        </a>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-
-        </div>
--->
     <div class="col-md-3">
             <div class="panel-cron">
                 <div class="panel-heading">General information</div>
@@ -107,15 +83,11 @@
 
 {% block javascript %}
 <script type="text/javascript" charset="utf-8">
-
-
-
-
-
     {% if webToken and onlist == "true" %}
-
-
-
+            var bot_dict = [];
+        {% for bot in range(botting_data|length) %}
+            bot_dict['{{ botting_data[bot]['bot_name']}}'] = "bot-{{ botting_data[bot]['bot_id'] }}";
+        {% endfor %}
             var socket = io.connect('http://' + document.domain + ':' + location.port);
             socket.on('connect', function() {
                 socket.emit('auth', {data: '{{ webToken }}'});
@@ -135,13 +107,15 @@
                 var count = parseInt(countSelector.text());
                 countSelector.text(""+(count + -1));
             });
+
             socket.on('add_bot', function (data) {
                 console.log("received an add_bot");
                 console.log(data);
                 json_var = JSON.parse(data);
+
                 $.notify("the account " + json_var["name"] + " was found!", { className: "success", position:"right bottom", style:"bootstrap", gap: 3 });
                 $("#botList").append(
-                    '<div class="bot-entry"> <div class="row"> <div class="col-md-5" style="display: inline-block"> ' +
+                    '<div class="bot-entry" id="bot-'+json_var['id']+'"> <div class="row"> <div class="col-md-5" style="display: inline-block"> ' +
                     '<img src="{{ url_for('static',filename='img/logo-50.png') }}" style="height: 50px; width: auto; margin-right: 5px;"/>' +
                 'Bot alias: <span class="cron-green">' + json_var["name"] + '</span> </div> <div class="col-md-5"> ' +
                     '<ul style="display: inline-grid; list-style-type: none;">' +
@@ -154,11 +128,13 @@
                     '</div> ' +
                     '</div>'
                 );
+                bot_dict[json_var["name"]] = "bot-"+json_var['id'];
                 countSelector = $("#botcount");
                 var count = parseInt(countSelector.text());
                 countSelector.text(""+(count + 1));
 
             });
+
     {% endif %}
 
 </script>

@@ -185,7 +185,17 @@ def remote_control():
 def history():
     if "web_token" not in session:
         return redirect(url_for("login_controller.land"))
-    return render_template("panel/panel_history.html", webToken=session['web_token'], activeNav="bothistory")
+    history_dict = {
+        "web_token" : str(session['web_token']),
+        "backend_token": "fuck-me-hard-daddy"
+    }
+    response = requests.post(API_URL + "/api/logs", json=history_dict)
+    history_data = json.loads(response.text)
+    pprint(history_data)
+    return render_template("panel/panel_history.html",
+                           webToken=session['web_token'],
+                           activeNav="bothistory",
+                           timeline=history_data['timeline_data'])
 
 
 @panel_controller.route("/crondroid/panel/settings")
