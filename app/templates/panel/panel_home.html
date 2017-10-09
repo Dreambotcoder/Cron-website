@@ -8,54 +8,57 @@
 <div class="row" style="margin-bottom: 20px;">
     <div class="col-md-3">
     <div class="dashboard-panel">
-        <div class="panel-descriptor">Web-Token</div>
-        <div class="panel-img"><img src="{{ url_for('static',filename='img/logo-50.png') }}"/></div>
+        <div class="panel-descriptor">WEBTOKEN</div>
+        <div class="panel-img"><img src="{{ url_for('static',filename='img/pc.png') }}"/></div>
         <div class="panel-counter">{{ webToken }}</div>
     </div>
     </div>
 <div class="col-md-3">
     <div class="dashboard-panel">
-        <div class="panel-descriptor">Script name</div>
-        <div class="panel-img"><img src="{{ url_for('static',filename='img/logo-50.png') }}"/></div>
+        <div class="panel-descriptor">SCRIPT NAME</div>
+        <div class="panel-img"><img src="{{ url_for('static',filename='img/eye.png') }}"/></div>
         <div class="panel-counter">{{ current_script.script_name }}</div>
     </div>
     </div>
     <div class="col-md-3">
     <div class="dashboard-panel">
-        <div class="panel-descriptor">Script Author</div>
-        <div class="panel-img"><img src="{{ url_for('static',filename='img/logo-50.png') }}"/></div>
+        <div class="panel-descriptor">AUTHOR</div>
+        <div class="panel-img"><img src="{{ url_for('static',filename='img/programmer.png') }}"/></div>
         <div class="panel-counter">{{ current_script.script_author }}</div>
     </div>
     </div>
     <div class="col-md-3">
         <div class="dashboard-panel">
-            <div class="panel-descriptor">Total bots online</div>
-            <div class="panel-img"><img src="{{ url_for('static',filename='img/logo-50.png') }}"/></div>
+            <div class="panel-descriptor">ONLINE BOTS</div>
+            <div class="panel-img"><img src="{{ url_for('static',filename='img/crondroid-logo.png') }}"/></div>
             <div class="panel-counter">{{ bot_count }}</div>
         </div>
     </div>
 </div>
 
     <div class="row">
-    <div class="col-md-7">
+    <div class="col-md-6">
         <div class="panel-cron">
                 <div class="panel-heading">News & Patch notes</div>
-
+                    <div class="panel-body-cron" style="padding:0 15px;">
                     {% for announcement in announcements %}
-                        <div class="panel-body-cron" style="">
-                    <div class="panel-cron">
-                        <div class="panel-heading dark-panel">{{ announcement.title }}
-                            <p class="float-right text-muted">Posted: {{ announcement.post_date }}</p></div>
-                        <div class="panel-body-cron dark-panel" style="padding: 10px; border-top: 0;">
-                            {{ announcement.text|safe }}
+                        <div class="announcement-panel">
+                        <div class="anouncement-header">
+                            <span class="cron-green cron-text"><strong>{{ announcement.title }}</strong></span>
+                            <span class="cron-green cron-text pull-right">{{ announcement.post_date }}</span>
                         </div>
-                    </div>
-                </div>
+                        <span class="cron-text">{{ announcement.text|safe }}</span>
+                        </div>
+
+
+
+
                     {% endfor %}
+                    </div>
         </div>
 
     </div>
-    <div class="col-md-5">
+    <div class="col-md-6">
             <div class="panel-cron">
                 <div class="panel-heading">Latest CronScript releases</div>
                 <div class="panel-body-cron" style="padding: 0">

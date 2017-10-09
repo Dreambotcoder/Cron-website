@@ -21,30 +21,33 @@
     </div>
 
         <div class="panel-body-cron" style="padding: 0;" id="botList">
-            {% for bot in range(botting_data|length) %}
+            {% if botting_data|length > 0 %}
+                {% for bot in range(botting_data|length) %}
 
-            <div class="bot-entry" id="bot-{{ botting_data[bot]['bot_id'] }}">
-                <div class="row">
-                    <div class="col-md-5" style="display: inline-block">
-                        <img src="{{ url_for('static',filename='img/logo-50.png') }}" style="height: 50px; width: auto; margin-right: 5px;"/>
-                        Bot alias: <span class="cron-green">{{ botting_data[bot]['bot_name']}}</span>
-                    </div>
-                    <div class="col-md-5">
-                        <ul style="display: inline-grid; list-style-type: none;">
-                          <li class="text-muted">IP-address: {{ botting_data[bot]['ip_address'] }}</li>
-                          <li class="text-muted">UTC clock-in: {{ botting_data[bot]['clock_in'] }}</li>
-                            <li class="text-muted">Unique identifier: #{{ botting_data[bot]['bot_id'] }}</li>
-                        </ul>
-                    </div>
-                    <div class="col-md-2" style="font-size: 2em;">
-                        <a onclick="openBotData({{ botting_data[bot]['bot_id'] }})" class="btn btn-block cron-btn-green" role="button"><span class="glyphicon glyphicon-eye-open"> </span></a>
+                <div class="bot-entry" id="bot-{{ botting_data[bot]['bot_id'] }}">
+                    <div class="row">
+                        <div class="col-md-5" style="display: inline-block; vertical-align: middle;">
+                            <img src="{{ url_for('static',filename='img/crondroid-logo.png') }}" style="height: 50px; width: auto; margin-right: 5px;"/>
+                            <span class="cron-green">{{ botting_data[bot]['bot_name']}}</span>
+                        </div>
+                        <div class="col-md-5">
+                            <ul style="display: inline-grid; list-style-type: none;">
+                              <li class="text-muted">IP-address: {{ botting_data[bot]['ip_address'] }}</li>
+                              <li class="text-muted">UTC clock-in: {{ botting_data[bot]['clock_in'] }}</li>
+                                <li class="text-muted">Unique identifier: #{{ botting_data[bot]['bot_id'] }}</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-2" style="font-size: 2em;">
+                            <a onclick="openBotData({{ botting_data[bot]['bot_id'] }})" class="btn btn-block cron-btn-green" role="button"><span class="glyphicon glyphicon-eye-open"> </span></a>
 
 
+                        </div>
                     </div>
+
                 </div>
-
-            </div>
-            {% endfor %}
+                {% endfor %}
+        {% else %}
+        {% endif %}
         </div>
     </div>
 
@@ -116,7 +119,7 @@
                 $.notify("the account " + json_var["name"] + " was found!", { className: "success", position:"right bottom", style:"bootstrap", gap: 3 });
                 $("#botList").append(
                     '<div class="bot-entry" id="bot-'+json_var['id']+'"> <div class="row"> <div class="col-md-5" style="display: inline-block"> ' +
-                    '<img src="{{ url_for('static',filename='img/logo-50.png') }}" style="height: 50px; width: auto; margin-right: 5px;"/>' +
+                    '<img src="{{ url_for('static',filename='img/crondroid-logo.png') }}" style="height: 50px; width: auto; margin-right: 5px;"/>' +
                 'Bot alias: <span class="cron-green">' + json_var["name"] + '</span> </div> <div class="col-md-5"> ' +
                     '<ul style="display: inline-grid; list-style-type: none;">' +
                     ' <li class="text-muted">IP-address: '+json_var['ip_address'] +'</li>' +

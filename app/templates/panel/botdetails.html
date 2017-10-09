@@ -5,16 +5,16 @@
 {% set onlist = False %}
 
 {% block inner_content %}
-     <div class="col-sm-12 col-md-8">
-            <div class="panel-cron">
-                <div class="panel-heading"><span class="glyphicon glyphicon-signal"></span> General Tracking</div>
-                <div class="panel-body-cron bot-details">
-                    <h1 class="cron-green text-center">{{ bot.bot_name }} </h1>
-                    <h3 class="text-muted text-center">Tracked data</h3>
-                <ul class="var-list" style="list-style-type: none;">
+    <div class="col-sm-12 col-md-3">
+         <div class="panel-cron">
+             <div class="panel-heading">Details</div>
+             <div class="panel-body-cron bot-details">
+                <img src="{{ url_for('static',filename="img/bot-logo-lander.png")}}" style="margin: auto; display: block; height: 100px; width: auto;"/>
+                <h2 class="cron-green text-center">{{ bot.bot_name }} </h2>
+                <p class="text-center text-muted">Account Hash: <a>9dfsdf872456Rfg</a></p>
+                 <ul class="var-list" style="list-style-type: none;">
                     {% for tracked_var in bot.game_data.tracked_vars %}
                         <li id="{{ tracked_var.key }}">{{ tracked_var.key }}
-
                                 {% if "%" in tracked_var.value  %}
                                 <div class="progress key_var">
                                       <div class="progress-bar" role="progressbar" aria-valuenow="70"
@@ -27,16 +27,32 @@
                                         {{ tracked_var.value }}
                                     </span>
                                 {% endif %}
-
                         </li>
                     {% endfor %}
                 </ul>
-                </div>
+             </div>
+         </div>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <div class="panel-cron">
+            <div class="panel-heading">Skills</div>
+            <div class="panel-body-cron">
+
+                    <div class="skill-container">
+                        {% for skill in skills %}
+                        <div class="skill">
+                            <img src="{{ url_for('static',filename="img/skills/"+skill+".png") }}"/>
+                            <span style="display: inline-block; margin-left: 6px;">1</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+
             </div>
         </div>
-    <div class="col-sm-12 col-md-4 float-right">
+    </div>
+    <div class="col-sm-12 col-md-3">
             <div class="panel-cron">
-                <div class="panel-heading"><span class="glyphicon glyphicon-briefcase"></span> Inventory</div>
+                <div class="panel-heading">Inventory</div>
 
                 <div class="panel-body-cron" style="" id="inventory">
                     {%  for item in bot.game_data.inventory_items  %}
@@ -48,6 +64,24 @@
                 </div>
             </div>
         </div>
+    <div class="col-sm-12 col-md-3">
+        <div class="panel-cron">
+            <div class="panel-heading">Notifications</div>
+            <div class="panel-body-cron" style="padding: 0;">
+                    <div class="shout">
+                        <span class="cron-text cron-green">YOU GAINED A LEVEL!</span>
+                        <p class="text-muted" style="font-size: 0.9em;">Timestamp: 1:00:00 UTC</p>
+                        Your Strength level is now 71
+                    </div>
+                <div class="shout">
+                         <span class="cron-text cron-green">YOU GAINED A LEVEL!</span>
+                        <p class="text-muted" style="font-size: 0.9em;">Timestamp: 1:00:00 UTC</p>
+                        Your Strength level is now 70
+                    </div>
+
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 

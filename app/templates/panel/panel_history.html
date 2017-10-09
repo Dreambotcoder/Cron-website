@@ -7,26 +7,64 @@
 {% block inner_content %}
 
     <div class="col-md-6">
-    <ul id="bot-timeline">
-        {% for timeline_entry in timeline %}
-            <li class="time-indicator">
-                <div class="timeline-dot"></div>
-                <span>{{ timeline_entry.date }}</span>
-            </li>
-            {% for  bot in timeline_entry.logs %}
-                <li class="timeline-entry">
-                    <div class="entry-alias"><span class="cron-green">{{ bot.name }}</span>
-                        <span class="text-muted pull-right" style="font-size: 1.1em;">Runtime: {{ bot.runtime }}</span>
-
-                    </div>
-
-                    <span class="text-muted">IP: {{ bot.ip }}</span>
-
+        <ul id="bot-timeline">
+            {% for timeline_entry in timeline %}
+                <li class="time-indicator">
+                    <div class="timeline-dot"></div>
+                    <span>{{ timeline_entry.date }}</span>
                 </li>
-                <li class="timeline-entry timeline-data" id="{{ bot.id }}">hey</li>
+                {% for  bot in timeline_entry.logs %}
+                    <li class="timeline-entry">
+                        <div class="entry-alias">
+                            <span class="cron-green">{{ bot.name }}</span>
+                            <a id="btn-{{ bot.id }}" onclick="showLogs({{ bot.id }})" style="padding: 15px;" class="btn cron-btn-green pull-right" role="button"><span class="glyphicon glyphicon-triangle-bottom"> </span></a>
+                        </div>
+                        <span class="text-muted" style="font-size: 1.1em;">Runtime: {{ bot.runtime }}</span> <br>
+                        <span class="text-muted">IP: {{ bot.ip }}</span>
+                    </li>
+
+                    <li class="timeline-entry timeline-data hidden" id="{{ bot.id }}"> </li>
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
-    </ul>
+        </ul>
     </div>
 
+{% endblock %}
+
+
+{% block javascript %}
+    <script type="text/javascript">
+
+        function showLogs(id) {
+            var botSelector = $('#'+id);
+            var button = $('#btn-'+id);
+            if (botSelector.hasClass('hidden')) {
+                button.find('span').removeClass("glyphicon-triangle-bottom");
+                button.find('span').addClass("glyphicon-triangle-top");
+                botSelector.html('<div class="load-spinner"></div> <p class="text-center cron-green">Grabbing logs...</p>');
+                botSelector.removeClass('hidden');
+                setTimeout(function() {
+                    $.ajax({
+                        url: "{{ url_for('panel_controller.log_view') }}",
+                        method: 'POST',
+                        contentType: "application/json",
+                        data: JSON.stringify(
+                            {
+                                "bot_id": 1
+                            }
+                        ),
+                        success: function (data) {
+                            $("#" + id).html(data);
+                        }
+                    })
+                },2000);
+            } else {
+                botSelector.addClass('hidden');
+                button.find('span').removeClass('glyphicon-triangle-top');
+                button.find('span').addClass("glyphicon-triangle-bottom");
+                botSelector.html("");
+            }
+        }
+
+    </script>
 {% endblock %}

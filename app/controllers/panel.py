@@ -6,9 +6,14 @@ from flask import Blueprint, session, url_for, redirect, render_template, json, 
 from flask_socketio import emit
 
 from app import get_root
-from app.config import API_URL
+from app.config import API_URL, SKILLS
 
 panel_controller = Blueprint('panel_controller', __name__)
+
+
+@panel_controller.route('/crondroid/panel/logview', methods=["POST"])
+def log_view():
+    return render_template('panel/modals/log_modal.html')
 
 
 @panel_controller.route("/util/item", methods=["POST"])
@@ -53,7 +58,7 @@ def emit_remote_process():
             "percentage": int(percentage),
             "message": str(message)
         }
-    ),room=user_room, namespace="")
+    ), room=user_room, namespace="")
     return ""
 
 
@@ -165,8 +170,8 @@ def remote_control():
         "script_id": int(session['script_id'])
     }
     post_dict_2 = {
-        "web_token" : session["web_token"],
-        "script_id" : int(session["script_id"])
+        "web_token": session["web_token"],
+        "script_id": int(session["script_id"])
     }
     response = requests.post(API_URL + "/api/remote", json=post_dict)
     commands_dict = json.loads(response.text)
@@ -186,12 +191,12 @@ def history():
     if "web_token" not in session:
         return redirect(url_for("login_controller.land"))
     history_dict = {
-        "web_token" : str(session['web_token']),
+        "web_token": str(session['web_token']),
         "backend_token": "fuck-me-hard-daddy"
     }
     response = requests.post(API_URL + "/api/logs", json=history_dict)
+    print response.text
     history_data = json.loads(response.text)
-    pprint(history_data)
     return render_template("panel/panel_history.html",
                            webToken=session['web_token'],
                            activeNav="bothistory",
@@ -229,11 +234,21 @@ def details(bot_id):
     pass
 
 
+@panel_controller.route('/crondroid/panel/graphs')
+def graph_view():
+    if "web_token" not in session:
+        return redirect(url_for("login_controller.land"))
+    return render_template("panel/panel_graph.html",
+                           webToken=session['web_token'],
+                           activeNav="graphing")
+
+
 @panel_controller.route('/crondroid/panel/botview/', methods=["POST"])
 def bot_view():
     bot_id = request.json.get("bot_id")
     data = json.loads(get_bot_data(bot_id))
+
     print json.dumps(data)
     if "web_token" not in session:
         return abort(400)
-    return render_template("panel/botdetails.html", bot=data, webToken=session['web_token'], bot_id=bot_id)
+    return render_template("panel/botdetails.html", bot=data, webToken=session['web_token'], bot_id=bot_id, skills=SKILLS)

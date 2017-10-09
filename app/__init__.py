@@ -5,6 +5,8 @@ import time
 from flask import Flask, redirect, url_for, render_template, json, session, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
+from app.config import REVISION
+
 app = Flask(__name__)
 
 # SOCKET-IO
@@ -47,6 +49,12 @@ def item_image():
 
     return dict(item_image=_item_image)
 
+
+@app.context_processor
+def build_revision():
+    def _build_revision():
+        return REVISION
+    return dict(build_revision=_build_revision())
 
 @app.context_processor
 def parse_value():
