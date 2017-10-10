@@ -62,6 +62,24 @@ def emit_remote_process():
     return ""
 
 
+@panel_controller.route('/emit/panel/notification', methods=['POST'])
+def emit_notification():
+    web_token = request.json.get("web_token")
+    bot_id = request.json.get("bot_id")
+    title = request.json.get("title")
+    text = request.json.get("text")
+    timestamp = request.json.get("timestamp")
+    user_room = 'details_{}'.format(web_token + "_" + str(bot_id))
+    emit('add_shout', json.dumps(
+        {
+            "title": title,
+            "text": text,
+            "timestamp": timestamp
+        }
+    ), room=user_room, namespace="")
+    return ""
+
+
 @panel_controller.route("/emit", methods=["POST"])
 def emit_stuff():
     bot_alias = request.json.get("bot_alias")
@@ -251,4 +269,5 @@ def bot_view():
     print json.dumps(data)
     if "web_token" not in session:
         return abort(400)
-    return render_template("panel/botdetails.html", bot=data, webToken=session['web_token'], bot_id=bot_id, skills=SKILLS)
+    return render_template("panel/botdetails.html", bot=data, webToken=session['web_token'], bot_id=bot_id,
+                           skills=SKILLS)
