@@ -606,11 +606,19 @@ footer {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1000;
+    z-index: 9999;
     background: rgba(0,0,0,0.6);
 }
 
+#loader-wrapper > h1 {
+    display: block;
+    margin: 20px auto auto;
+}
+.client-snapshot {
+    display: block;
+    margin: 10px auto auto;
 
+}
 
 
 #loader-wrapper > p {
@@ -840,4 +848,20 @@ li.time-indicator > span {
     width: 60px;
     margin-bottom: 5px;
     display: inline-block;
+}
+
+.skill:hover {
+    border: 1px solid #2ecc71;
+}
+
+.skill.active {
+    border: 1px solid #2ecc71;
+}
+
+#snapshot-loader {
+    margin: 10px;
+}
+
+#snapshot-list {
+    margin: 10px;
 }

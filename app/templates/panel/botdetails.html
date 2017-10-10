@@ -40,11 +40,16 @@
 
                     <div class="skill-container">
                         {% for skill in skills %}
-                        <div class="skill">
+                        <div class="skill" id="{{ skill }}-container" onclick="loadStatInfo('{{ skill }}')">
                             <img src="{{ url_for('static',filename="img/skills/"+skill+".png") }}"/>
-                            <span style="display: inline-block; margin-left: 6px;">1</span>
+                            <span style="display: inline-block; margin-left: 6px;" id="{{ skill }}">{{ xp_to_level(stat_data[skill]['current_xp']) }}</span>
                         </div>
                         {% endfor %}
+                    <div id="skill-details" class="hidden">
+                        <p id="skill-name"></p>
+                        <p id="skill-start-xp"></p>
+                        <p id="skill-current-xp"></p>
+                    </div>
                     </div>
 
             </div>
@@ -53,8 +58,20 @@
     <div class="col-sm-12 col-md-3">
             <div class="panel-cron">
                 <div class="panel-heading">Snapshots</div>
-
-
+                <div class="panel-body-cron">
+                        <a class="btn cron-btn-green" style="margin: auto; display: block;"><i class="fa fa-camera" aria-hidden="true"></i> Request Snapshot</a>
+                        <div id="snapshot-loader" class="hidden">
+                            <p class="text-muted text-center"><i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i> Requesting snapshot...</p>
+                        </div>
+                        <div id="snapshot-list">
+                            <span>10/10/2017 18:27</span>
+                        </div>
+                        <div id="loader-wrapper" class="hidden">
+                            <h1 id="snapshot-header">Snapshot 10/10/2017 18:27</h1>
+                            <img alt="sample.png"
+                                 class="client-snapshot" src=""/>
+                        </div>
+                </div>
             </div>
         </div>
     <div class="col-sm-12 col-md-3">
@@ -92,51 +109,29 @@
                 socket.emit('disconnect');
             });
 
-            /**
-        function updateInventory(json_data) {
-            inventory = $("#inventory");
-            inventory.empty();
-            inventory_data = json_data["data"]["inventory_items"];
-            for (var i = 0; i < inventory_data.length; i++)
-            {
-                id = inventory_data[i]["id"];
-                amount = inventory_data[i]["amount"];
-                name = "";
-                $.ajax({
-                    url: "{{ url_for('panel_controller.get_item_name') }}",
-                    method: 'POST',
-                    contentType: "application/json",
-                    data: JSON.stringify(
-                        {
-                            "item_id" : id
-                        }
-                    ),
-                    success: function (result) {
-                        name = result;
-                        console.log("RESULT NAME = " + name);
-                    }
-                });
-                item = '<div class="rs-item" style="">' +
-                    '<p style="position:absolute; margin: -3px -3px -3px 1px; color:yellow; text-shadow: 1px 1px #000000; font-family:"Source Sans Pro", sans-serif;">'+amount+'</p>' +
-                    '<img title="'+name+'" src="http://cdn.rsbuddy.com/items/'+id+'.png"/> ' +
-                '</div>';
-                inventory.append(item);
-            }
 
-        }**/
+        var json_data;
+        var entry;
+        var key;
+        var value;
+
 
         socket.on('update_details', function (data) {
-                console.log("received an update_details");
-                console.log(data);
-                var json_data = JSON.parse(data);
-                for (var i = 0; i < json_data["data"]["tracked_vars"].length; i++) {
-                    entry = json_data["data"]["tracked_vars"][i];
-                    key = entry["key"];
-                    value = entry["value"];
-                    $("#"+key).find(".key_var").text(value)
-                }
-                //updateInventory(json_data);
-            });
+            console.log("received an update_details");
+            console.log(data);
+            json_data = JSON.parse(data);
+            for (var i = 0; i < json_data["data"]["tracked_vars"].length; i++) {
+                entry = json_data["data"]["tracked_vars"][i];
+                key = entry["key"];
+                value = entry["value"];
+                $("#" + key).find(".key_var").text(value)
+            }
+            {% for skill in skills %}
+                $("#{{ skill }}").text(
+                    json_data["stat_data"]["{{ skill }}"]["level"]);
+            {% endfor %}
+        });
+
 
         socket.on('add_shout', function(data) {
             console.log('received an add_shout');
@@ -150,6 +145,37 @@
                 ' </div>';
             $(entry).hide().prependTo("#shouts").fadeIn();
         });
+
+        function loadStatInfo(stat) {
+            {% for skill in skills %}
+                $("#{{ skill }}-container").removeClass("active");
+            {% endfor %}
+            $("#"+stat+"-container").addClass("active");
+            (function(skillStat) {
+            $.ajax({
+                    url: "{{ url_for('panel_controller.get_levels') }}",
+                    method: 'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify(
+                        {
+                            "bot_id" : {{ bot_id }}
+                        }
+                    ),
+                    success: function(data) {
+                        if ($("#skill-details").hasClass("hidden")){
+                            $("#skill-details").removeClass("hidden");
+
+                        }
+                        var dataVar = JSON.parse(data);
+                        var dataStat = dataVar[skillStat];
+                        $("#skill-name").html("<span class='cron-green'>Skill name: " + skillStat + "</span>");
+                        $("#skill-start-xp").text("Start experience: " + dataStat["start_xp"]);
+                        $("#skill-current-xp").text("Current experience: " + dataStat["current_xp"]);
+                    }
+                });
+            })(stat);
+        }
+
     {% endif %}
     </script>
 {% endblock %}

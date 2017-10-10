@@ -2,10 +2,13 @@ import os
 from pprint import pprint
 
 import time
+
+import math
 from flask import Flask, redirect, url_for, render_template, json, session, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
 from app.config import REVISION
+from app.controllers.calculations import xp_to_lvl_calc
 
 app = Flask(__name__)
 
@@ -20,6 +23,7 @@ def get_root():
 from app.controllers.login import login_controller
 from app.controllers.panel import panel_controller
 from app.controllers.website import website_controller
+from app.controllers.calculations import calculation_controller
 
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 
@@ -28,6 +32,7 @@ app.secret_key = "i-am-the-one-who-knocks"
 app.register_blueprint(login_controller)
 app.register_blueprint(panel_controller)
 app.register_blueprint(website_controller)
+app.register_blueprint(calculation_controller)
 
 botlist_clients = []
 
@@ -54,7 +59,9 @@ def item_image():
 def build_revision():
     def _build_revision():
         return REVISION
+
     return dict(build_revision=_build_revision())
+
 
 @app.context_processor
 def parse_value():
@@ -87,6 +94,13 @@ def item_name():
         return item_name
 
     return dict(item_name=_item_name)
+
+
+@app.context_processor
+def xp_to_level():
+    def _xp_to_level(xp):
+        return xp_to_lvl_calc(xp)
+    return dict(xp_to_level=_xp_to_level)
 
 
 @app.context_processor
@@ -126,6 +140,8 @@ def handle_details(data):
     if "web_token" in session and session["web_token"] == data['data']:
         detail_room = 'details_{}'.format(session['web_token'] + "_" + str(data['bot_id']))
         join_room(detail_room)
+        user_room = 'user_{}'.format(session['web_token'])
+        leave_room(user_room)
 
 
 @socketio.on('disconnect')

@@ -5,7 +5,7 @@ import requests
 from flask import Blueprint, session, url_for, redirect, render_template, json, request, abort
 from flask_socketio import emit
 
-from app import get_root
+from app import get_root, xp_to_lvl_calc
 from app.config import API_URL, SKILLS
 
 panel_controller = Blueprint('panel_controller', __name__)
@@ -104,9 +104,15 @@ def emit_bot():
     bot_id = request.json.get("bot_id")
     web_token = request.json.get("web_token")
     user_room = 'details_{}'.format(web_token + "_" + str(bot_id))
+    xp_data = {}
+    stat_data = json.loads(request.json.get('stat_data'))
+    for skill in SKILLS:
+        level = xp_to_lvl_calc(int(stat_data.get(str(skill)).get("current_xp")))
+        xp_data[str(skill)] = {"level": int(level)}
     emit('update_details', json.dumps(
         {
-            "data": json.loads(json.dumps(request.json.get("data")))
+            "data": json.loads(request.json.get("data")),
+            "stat_data": xp_data
         }
     ), room=user_room, namespace="")
     return ""
@@ -233,11 +239,30 @@ def bot_data():
     return get_bot_data(request.json.get("bot_id"))
 
 
+@panel_controller.route('/crondroid/panel/levels', methods=["POST"])
+def get_levels():
+    if "web_token" not in session:
+        return abort(401)
+    bot_id = request.json.get("bot_id")
+    level_dict = {
+        "bot_id": bot_id,
+        "web_token": session["web_token"],
+        "backend_token" : "fuck-me-hard-daddy"
+    }
+    response = requests.post(API_URL + "/api/skills/levels", json=level_dict)
+    bot_data = json.loads(response.text)
+    xp_data = {}
+    xp_data["stat_data"] = xp_data
+    print "WHOA"
+    pprint(xp_data)
+    print json.dumps(bot_data)
+    return json.dumps(bot_data)
+
+
 def get_bot_data(bot_id):
     if "web_token" not in session:
         return abort(400)
     web_token = session["web_token"]
-    bot_id = request.json.get("bot_id")
     post_dict = {
         "web_token": web_token,
         "bot_id": bot_id
@@ -263,11 +288,11 @@ def graph_view():
 
 @panel_controller.route('/crondroid/panel/botview/', methods=["POST"])
 def bot_view():
-    bot_id = request.json.get("bot_id")
+    bot_id = request.form["bot_id"]
     data = json.loads(get_bot_data(bot_id))
 
     print json.dumps(data)
     if "web_token" not in session:
         return abort(400)
     return render_template("panel/botdetails.html", bot=data, webToken=session['web_token'], bot_id=bot_id,
-                           skills=SKILLS)
+                           skills=SKILLS, stat_data=data["stat_data"])

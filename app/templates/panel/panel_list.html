@@ -150,7 +150,9 @@ $   (document).ajaxStop($.unblockUI);
 
     function openBotData(bot_id)
     {
-         $.ajax({
+        $.redirect("{{ url_for('panel_controller.bot_view') }}",
+            { "bot_id" : bot_id}, "POST");
+         /**$.ajax({
                 url: "{{ url_for('panel_controller.bot_view') }}",
                 method: 'POST',
                 contentType: "application/json",
@@ -164,7 +166,7 @@ $   (document).ajaxStop($.unblockUI);
                     document.write(result);
 
                 }
-            });
+            });**/
     }
     function loadBotData(bot_id)
     {
