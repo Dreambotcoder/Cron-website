@@ -614,12 +614,12 @@ footer {
     display: block;
     margin: 20px auto auto;
 }
-.client-snapshot {
+
+#client-snapshot {
     display: block;
     margin: 10px auto auto;
-
+    padding: 10px;
 }
-
 
 #loader-wrapper > p {
     position: fixed;
@@ -863,5 +863,43 @@ li.time-indicator > span {
 }
 
 #snapshot-list {
-    margin: 10px;
+    margin: 5px;
+}
+
+#snapshot-list > span {
+    color: whitesmoke;
+    font-size: 1.1em;
+    display: block;
+    font-family: "Open Sans", serif;
+    border: 1px solid #444;
+    padding: 10px;
+    background: #222;
+    width: 100%;
+}
+
+.custom-modal {
+    background: #222;
+    border: 1px solid #444;
+    left: 20%;
+    right: 20%;
+    display: block;
+    width: 800px;
+    margin: 5% auto auto;
+}
+#snapshot-list > span:hover {
+    border: 1px solid #2ecc71;
+    cursor: pointer;
+}
+
+
+.custom-modal-header {
+    background: #333;
+    padding: 10px;
+    margin: 0;
+    border-bottom: 1px solid #222;
+}
+
+.custom-modal-header > span {
+    font-family: "Open Sans", serif;
+    font-size: 1.2em;
 }

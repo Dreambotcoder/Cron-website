@@ -58,18 +58,23 @@
     <div class="col-sm-12 col-md-3">
             <div class="panel-cron">
                 <div class="panel-heading">Snapshots</div>
-                <div class="panel-body-cron">
-                        <a class="btn cron-btn-green" style="margin: auto; display: block;"><i class="fa fa-camera" aria-hidden="true"></i> Request Snapshot</a>
-                        <div id="snapshot-loader" class="hidden">
-                            <p class="text-muted text-center"><i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i> Requesting snapshot...</p>
-                        </div>
+                <div class="panel-body-cron" style="padding: 0;">
+
                         <div id="snapshot-list">
-                            <span>10/10/2017 18:27</span>
+                            {% for snapshot in snapshots %}
+                            <span onclick='showSnapshot({{ snapshot.id }},"{{ snapshot.clock_in }}")' id="{{ snapshot.id }}"><i class="fa fa-check cron-green" aria-hidden="true"></i>
+                                Snapshot UID #{{ snapshot.id }}, {{ snapshot.clock_in }}</span>
+                            {% endfor %}
                         </div>
                         <div id="loader-wrapper" class="hidden">
-                            <h1 id="snapshot-header">Snapshot 10/10/2017 18:27</h1>
-                            <img alt="sample.png"
-                                 class="client-snapshot" src=""/>
+                            <div class="custom-modal hidden" id="snapshot-modal">
+                                <div class="custom-modal-header">
+                                    <span id="snapshot-header" class=""></span>
+                                    <span class="pull-right"><a onclick="closeModal()" class="btn cron-btn-green" style="display:inline;">Close</a></span>
+                                </div>
+                                <img alt="sample.png"
+                                     id="client-snapshot" src=""/>
+                                </div>
                         </div>
                 </div>
             </div>
@@ -94,6 +99,8 @@
 {% block javascript %}
 <script type="text/javascript" charset="utf-8">
     {% if webToken%}
+
+        var snapshot_cache = [];
 
         var socket = io.connect('http://' + document.domain + ':' + location.port);
             socket.on('connect', function() {
@@ -133,6 +140,12 @@
         });
 
 
+        /**$( document ).ajaxComplete(function( event, xhr, settings ) {
+          if ( settings.url === "{{ url_for('panel_controller.snapshot_loader') }}" ) {
+              var b64_img = xhr.responseText.replace("&#9;","");
+              $("#client-snapshot").attr("src",b64_img);
+          }
+        });**/
         socket.on('add_shout', function(data) {
             console.log('received an add_shout');
             console.log(data);
@@ -145,6 +158,51 @@
                 ' </div>';
             $(entry).hide().prependTo("#shouts").fadeIn();
         });
+
+        function requestSnapshot(session_id) {
+            $("#snapshot-loader").removeClass("hidden");
+        }
+
+        function showSnapshot(snapshot_uid, snapshot_clock_in) {
+            var snapshot_data;
+            if (snapshot_cache[snapshot_uid] !== undefined) {
+                $("#loader-wrapper").fadeIn().removeClass("hidden");
+                $("#snapshot-modal").slideUp().removeClass("hidden");
+                $("#client-snapshot").attr("src","data:image/png;base64,"+snapshot_cache[snapshot_uid]);
+                $("#snapshot-header").text("Snapshot #"+snapshot_uid + ", " + snapshot_clock_in);
+            } else {
+                (function(snapshot) {
+                    $.ajax({
+                        url: "{{ url_for('panel_controller.snapshot_loader') }}",
+                        method: 'POST',
+                        cache: false,
+                        contentType: "application/json",
+                        dataType: "text",
+                        data: JSON.stringify(
+                            {
+                                "bot_id" : {{ bot_id }},
+                                "snapshot_id" : snapshot_uid
+                            }
+                        ),
+                        success: function (result) {
+                           // console.log(result);
+                            $("#loader-wrapper").fadeIn().removeClass("hidden");
+                            $("#snapshot-modal").slideUp().removeClass("hidden");
+                            $("#snapshot-header").text("Snapshot #"+snapshot_uid + ", " + snapshot_clock_in);
+                            $("#client-snapshot").attr("src","data:image/png;base64,"+result);
+                            snapshot_cache[snapshot_uid] = result;
+                        }
+                    });
+                })(snapshot_data);
+            }
+        }
+
+        function closeModal() {
+            $("#snapshot-modal").addClass("hidden");
+            $("#loader-wrapper").addClass("hidden");
+            $("#snapshot-header").text("");
+            $("#client-snapshot").attr("src","");
+        }
 
         function loadStatInfo(stat) {
             {% for skill in skills %}

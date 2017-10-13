@@ -16,6 +16,7 @@ def log_view():
     return render_template('panel/modals/log_modal.html')
 
 
+
 @panel_controller.route("/util/item", methods=["POST"])
 def get_item_name():
     itemId = request.json.get("item_id")
@@ -234,6 +235,20 @@ def settings():
     return render_template("panel/panel_settings.html", webToken=session['web_token'], activeNav="settings")
 
 
+@panel_controller.route("/crondroid/panel/loader/snapshot", methods=["POST"])
+def snapshot_loader():
+    session_id = request.json.get("bot_id")
+    snapshot_id = request.json.get("snapshot_id")
+    snapshot_dict = {
+        "bot_id" : session_id,
+        "snapshot_id" : snapshot_id,
+        "backend_token" : "fuck-me-hard-daddy"
+    }
+    response = requests.post(API_URL + "/api/snapshots/specific/base64", json=snapshot_dict)
+    base64_source = response.text
+    return base64_source
+
+
 @panel_controller.route('/crondroid/panel/bot-data', methods=['POST'])
 def bot_data():
     return get_bot_data(request.json.get("bot_id"))
@@ -294,5 +309,10 @@ def bot_view():
     print json.dumps(data)
     if "web_token" not in session:
         return abort(400)
-    return render_template("panel/botdetails.html", bot=data, webToken=session['web_token'], bot_id=bot_id,
-                           skills=SKILLS, stat_data=data["stat_data"])
+    return render_template("panel/botdetails.html",
+                           bot=data,
+                           webToken=session['web_token'],
+                           bot_id=bot_id,
+                           skills=SKILLS,
+                           stat_data=data["stat_data"],
+                           snapshots=data["snapshots"])
